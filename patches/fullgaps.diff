@@ -1,23 +1,4 @@
-From 7b7773458c072e4b24d6ea32d0364a8e402e4a43 Mon Sep 17 00:00:00 2001
-From: swy7ch <swy7ch@protonmail.com>
-Date: Fri, 8 May 2020 19:07:24 +0200
-Subject: [PATCH] [PATCH] update dwm-fullgaps patch to be used with tile layout
- update
 
-the recent tile layout changes in commit HEAD~1 (f09418b) broke the
-patch
-
-this patch adapt the new `if` statements to take gaps into account
-
-this patch also provides manpage entries for the keybindings
----
- config.def.h |  4 ++++
- dwm.1        | 10 ++++++++++
- dwm.c        | 33 +++++++++++++++++++++++----------
- 3 files changed, 37 insertions(+), 10 deletions(-)
-
-diff --git a/dwm.c b/dwm.c
-index 9fd0286..45a58f3 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -119,6 +119,7 @@ struct Monitor {
@@ -90,6 +71,3 @@ index 9fd0286..45a58f3 100644
  		}
  }
  
--- 
-2.26.2
-
