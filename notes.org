@@ -6,3 +6,6 @@ Voir la configuration:
 
 Appliquer les modifications:
 - git add -A && git commit -m "Je suis un abruti" && suckdiff && suckclean
+
+Récupérer les changements:
+- cd dwm && git pull && cd dwm && suckupdate && ..
