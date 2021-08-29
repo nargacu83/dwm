@@ -1,0 +1,8 @@
+#+TITLE: Notes
+
+Voir la configuration:
+- Aller dans le dossier dwm
+- suckload && git checkout config.diff
+
+Appliquer les modifications:
+- git add -A && git commit -m "Je suis un abruti" && suckdiff && suckclean
