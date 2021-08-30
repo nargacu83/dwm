@@ -1,7 +1,7 @@
 
 --- a/config.def.h
 +++ b/config.def.h
-@@ -1,25 +1,30 @@
+@@ -1,25 +1,32 @@
  /* See LICENSE file for copyright and license details. */
  
  /* appearance */
@@ -18,7 +18,9 @@
 -static const char col_gray3[]       = "#bbbbbb";
 -static const char col_gray4[]       = "#eeeeee";
 -static const char col_cyan[]        = "#005577";
-+static const char *fonts[]          = { "Cantarell:size=11:Style=Bold" };
++static const int focusonwheel       = 0;
++
++static const char *fonts[]          = { "Cantarell:size=11:style=Bold" };
 +static const char dmenufont[]       = "Cantarell:size=11";
 +
 +/* colors */
@@ -33,8 +35,8 @@
 -	/*               fg         bg         border   */
 -	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
 -	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
-+	/*               fg      bg      border   */
-+	[SchemeNorm] = { col_fg, col_bg, col_bd },
++	/*               fg            bg            border   */
++	[SchemeNorm] = { col_fg      , col_bg      , col_bd },
 +	[SchemeSel]  = { col_fg_focus, col_bg_focus, col_bd_focus  },
  };
  
@@ -44,7 +46,7 @@
  
  static const Rule rules[] = {
  	/* xprop(1):
-@@ -32,7 +37,7 @@ static const Rule rules[] = {
+@@ -32,7 +39,7 @@ static const Rule rules[] = {
  };
  
  /* layout(s) */
@@ -53,7 +55,7 @@
  static const int nmaster     = 1;    /* number of clients in master area */
  static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
  static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
-@@ -55,15 +60,10 @@ static const Layout layouts[] = {
+@@ -55,15 +62,10 @@ static const Layout layouts[] = {
  /* helper for spawning shell commands in the pre dwm-5.0 fashion */
  #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
  
@@ -71,7 +73,7 @@
  	{ MODKEY,                       XK_b,      togglebar,      {0} },
  	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
  	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-@@ -71,30 +71,30 @@ static Key keys[] = {
+@@ -71,30 +73,30 @@ static Key keys[] = {
  	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
  	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
  	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
@@ -119,7 +121,7 @@
  };
  
  /* button definitions */
-@@ -104,7 +104,7 @@ static Button buttons[] = {
+@@ -104,7 +106,7 @@ static Button buttons[] = {
  	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
  	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
  	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
