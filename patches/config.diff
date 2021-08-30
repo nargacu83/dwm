@@ -1,7 +1,7 @@
 
 --- a/config.def.h
 +++ b/config.def.h
-@@ -1,25 +1,32 @@
+@@ -1,25 +1,36 @@
  /* See LICENSE file for copyright and license details. */
  
  /* appearance */
@@ -18,6 +18,10 @@
 -static const char col_gray3[]       = "#bbbbbb";
 -static const char col_gray4[]       = "#eeeeee";
 -static const char col_cyan[]        = "#005577";
++static const int usealtbar          = 1;        /* 1 means use non-dwm status bar */
++static const char *altbarclass      = "Polybar"; /* Alternate bar class name */
++static const char *alttrayname      = "tray";    /* Polybar tray instance name */
++static const char *altbarcmd        = "$HOME/.config/polybar/bar.sh"; /* Alternate bar launch command */
 +static const int focusonwheel       = 0;
 +
 +static const char *fonts[]          = { "Cantarell:size=11:style=Bold" };
@@ -46,7 +50,7 @@
  
  static const Rule rules[] = {
  	/* xprop(1):
-@@ -32,7 +39,7 @@ static const Rule rules[] = {
+@@ -32,7 +43,7 @@ static const Rule rules[] = {
  };
  
  /* layout(s) */
@@ -55,7 +59,7 @@
  static const int nmaster     = 1;    /* number of clients in master area */
  static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
  static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
-@@ -55,46 +62,52 @@ static const Layout layouts[] = {
+@@ -55,46 +66,52 @@ static const Layout layouts[] = {
  /* helper for spawning shell commands in the pre dwm-5.0 fashion */
  #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
  
@@ -132,7 +136,7 @@
  };
  
  /* button definitions */
-@@ -104,7 +117,7 @@ static Button buttons[] = {
+@@ -104,7 +121,7 @@ static Button buttons[] = {
  	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
  	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
  	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
