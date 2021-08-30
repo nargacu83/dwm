@@ -55,7 +55,7 @@
  static const int nmaster     = 1;    /* number of clients in master area */
  static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
  static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
-@@ -55,15 +62,10 @@ static const Layout layouts[] = {
+@@ -55,46 +62,52 @@ static const Layout layouts[] = {
  /* helper for spawning shell commands in the pre dwm-5.0 fashion */
  #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
  
@@ -70,18 +70,25 @@
 -	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 +	{ MODKEY,                       XK_p,      spawn,          SHCMD("rofi -no-lazy-grab -show drun -modi drun") },
 +	{ MODKEY,                       XK_Return, spawn,          SHCMD("alacritty") },
++
  	{ MODKEY,                       XK_b,      togglebar,      {0} },
++
  	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
  	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-@@ -71,30 +73,30 @@ static Key keys[] = {
++
+ 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
  	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
  	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
  	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 -	{ MODKEY,                       XK_Return, zoom,           {0} },
 -	{ MODKEY,                       XK_Tab,    view,           {0} },
 -	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
++    { MODKEY|ControlMask,           XK_j,      movestack,      {.i = +1 } },
++	{ MODKEY|ControlMask,           XK_k,      movestack,      {.i = -1 } },
++
 +	/* { MODKEY,                       XK_Return, zoom,           {0} }, */
 +	/* { MODKEY,                       XK_Tab,    view,           {0} }, */
++
 +	{ MODKEY,                       XK_w,      killclient,     {0} },
  	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
  	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
@@ -90,8 +97,10 @@
  	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 -	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 -	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
++
 +	{ MODKEY,                       XK_agrave, view,           {.ui = ~0 } },
 +	{ MODKEY|ShiftMask,             XK_agrave, tag,            {.ui = ~0 } },
++
  	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 -	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 +	{ MODKEY,                       XK_semicolon, focusmon,    {.i = +1 } },
@@ -108,6 +117,7 @@
 -	TAGKEYS(                        XK_9,                      8)
 -	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 +	{ MODKEY|ShiftMask,             XK_semicolon, tagmon,      {.i = +1 } },
++
 +	TAGKEYS(                        XK_ampersand,              0)
 +	TAGKEYS(                        XK_eacute,                 1)
 +	TAGKEYS(                        XK_quotedbl,               2)
@@ -117,11 +127,12 @@
 +	TAGKEYS(                        XK_egrave,                 6)
 +	TAGKEYS(                        XK_underscore,             7)
 +	TAGKEYS(                        XK_ccedilla,               8)
++
 +	{ MODKEY|ControlMask,           XK_q,      quit,           {0} },
  };
  
  /* button definitions */
-@@ -104,7 +106,7 @@ static Button buttons[] = {
+@@ -104,7 +117,7 @@ static Button buttons[] = {
  	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
  	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
  	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },

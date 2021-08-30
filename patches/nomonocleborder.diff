@@ -1,7 +1,4 @@
-Version: https://gist.github.com/SebastianJarsve/e7e86b26aa4a085aa819cf24975532bd
 
-Notes:
- * Only remove borders in monocle layout
 --- a/dwm.c
 +++ b/dwm.c
 @@ -318,6 +318,9 @@ applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact)
