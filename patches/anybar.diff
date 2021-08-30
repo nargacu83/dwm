@@ -1,38 +1,4 @@
-From a046eabd24a430ee2a7348a807057dc7c42f7cec Mon Sep 17 00:00:00 2001
-From: mihirlad55 <mihirlad55@gmail.com>
-Date: Sat, 5 Sep 2020 00:51:33 +0000
-Subject: [PATCH] Add support for managing external status bars
 
-This patch allows dwm to manage other status bars such as
-polybar/lemonbar without them needing to set override-redirect. For
-all intents and purposes, DWM treats this bar as if it were its own
-and as a result helps the status bar and DWM live in harmony.
-
-This has a few advantages
-* The bar does not block fullscreen windows
-* DWM makes room for the status bar, so windows do not overlap the bar
-* The bar can be hidden/killed and DWM will not keep an unsightly gap
-  where the bar was
-* DWM receives EnterNotify events when your cursor enters the bar
-
-To use another status bar, set usealtbar to 1 in your config.h and set
-altbarclass to the class name (can be found using xprop) to the class
-name of your status bar. Also make sure that if your status bar will
-be displayed on top, topbar is set to 1 in your config, and if it will
-be displayed on bottom, topbar is set to 0. This patch does not
-support bars that are not docked at the top or at the bottom of your
-monitor.
-
-This verison of the patch fixes handling of polybar's tray.
-
-The patch is developed at https://github.com/mihirlad55/dwm-anybar
----
- config.def.h |   4 ++
- dwm.c        | 193 +++++++++++++++++++++++++++++++++++++++++++++++----
- 2 files changed, 182 insertions(+), 15 deletions(-)
-
-diff --git a/dwm.c b/dwm.c
-index 9fd0286..7bb5307 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -47,8 +47,8 @@
@@ -128,15 +94,7 @@ index 9fd0286..7bb5307 100644
  			}
  			focus(NULL);
  			arrange(NULL);
-@@ -639,6 +650,7 @@ createmon(void)
- 	m->nmaster = nmaster;
- 	m->showbar = showbar;
- 	m->topbar = topbar;
-+	m->bh = bh;
- 	m->lt[0] = &layouts[0];
- 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
- 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
-@@ -649,10 +661,15 @@ void
+@@ -649,10 +660,15 @@ void
  destroynotify(XEvent *e)
  {
  	Client *c;
@@ -152,7 +110,7 @@ index 9fd0286..7bb5307 100644
  }
  
  void
-@@ -696,6 +713,9 @@ dirtomon(int dir)
+@@ -696,6 +712,9 @@ dirtomon(int dir)
  void
  drawbar(Monitor *m)
  {
@@ -162,7 +120,7 @@ index 9fd0286..7bb5307 100644
  	int x, w, tw = 0;
  	int boxs = drw->fonts->h / 9;
  	int boxw = drw->fonts->h / 6 + 2;
-@@ -1077,6 +1097,45 @@ manage(Window w, XWindowAttributes *wa)
+@@ -1077,6 +1096,45 @@ manage(Window w, XWindowAttributes *wa)
  	focus(NULL);
  }
  
@@ -208,7 +166,7 @@ index 9fd0286..7bb5307 100644
  void
  mappingnotify(XEvent *e)
  {
-@@ -1097,7 +1156,9 @@ maprequest(XEvent *e)
+@@ -1097,7 +1155,9 @@ maprequest(XEvent *e)
  		return;
  	if (wa.override_redirect)
  		return;
@@ -219,7 +177,7 @@ index 9fd0286..7bb5307 100644
  		manage(ev->window, &wa);
  }
  
-@@ -1393,7 +1454,9 @@ scan(void)
+@@ -1393,7 +1453,9 @@ scan(void)
  			if (!XGetWindowAttributes(dpy, wins[i], &wa)
  			|| wa.override_redirect || XGetTransientForHint(dpy, wins[i], &d1))
  				continue;
@@ -230,7 +188,7 @@ index 9fd0286..7bb5307 100644
  				manage(wins[i], &wa);
  		}
  		for (i = 0; i < num; i++) { /* now the transients */
-@@ -1408,6 +1471,29 @@ scan(void)
+@@ -1408,6 +1470,29 @@ scan(void)
  	}
  }
  
@@ -260,7 +218,7 @@ index 9fd0286..7bb5307 100644
  void
  sendmon(Client *c, Monitor *m)
  {
-@@ -1546,7 +1632,7 @@ setup(void)
+@@ -1546,7 +1631,7 @@ setup(void)
  	if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
  		die("no fonts could be loaded.");
  	lrpad = drw->fonts->h;
@@ -269,7 +227,7 @@ index 9fd0286..7bb5307 100644
  	updategeom();
  	/* init atoms */
  	utf8string = XInternAtom(dpy, "UTF8_STRING", False);
-@@ -1595,6 +1681,7 @@ setup(void)
+@@ -1595,6 +1680,7 @@ setup(void)
  	XSelectInput(dpy, root, wa.event_mask);
  	grabkeys();
  	focus(NULL);
@@ -277,7 +235,7 @@ index 9fd0286..7bb5307 100644
  }
  
  
-@@ -1653,6 +1740,13 @@ spawn(const Arg *arg)
+@@ -1653,6 +1739,13 @@ spawn(const Arg *arg)
  	}
  }
  
@@ -291,7 +249,7 @@ index 9fd0286..7bb5307 100644
  void
  tag(const Arg *arg)
  {
-@@ -1702,9 +1796,19 @@ tile(Monitor *m)
+@@ -1702,9 +1795,19 @@ tile(Monitor *m)
  void
  togglebar(const Arg *arg)
  {
@@ -312,7 +270,7 @@ index 9fd0286..7bb5307 100644
  	arrange(selmon);
  }
  
-@@ -1787,10 +1891,41 @@ unmanage(Client *c, int destroyed)
+@@ -1787,10 +1890,41 @@ unmanage(Client *c, int destroyed)
  	arrange(m);
  }
  
@@ -354,7 +312,7 @@ index 9fd0286..7bb5307 100644
  	XUnmapEvent *ev = &e->xunmap;
  
  	if ((c = wintoclient(ev->window))) {
-@@ -1798,12 +1933,18 @@ unmapnotify(XEvent *e)
+@@ -1798,12 +1932,18 @@ unmapnotify(XEvent *e)
  			setclientstate(c, WithdrawnState);
  		else
  			unmanage(c, 0);
@@ -374,7 +332,7 @@ index 9fd0286..7bb5307 100644
  	Monitor *m;
  	XSetWindowAttributes wa = {
  		.override_redirect = True,
-@@ -1829,11 +1970,11 @@ updatebarpos(Monitor *m)
+@@ -1829,11 +1969,11 @@ updatebarpos(Monitor *m)
  	m->wy = m->my;
  	m->wh = m->mh;
  	if (m->showbar) {
@@ -389,7 +347,7 @@ index 9fd0286..7bb5307 100644
  }
  
  void
-@@ -2070,13 +2211,35 @@ wintomon(Window w)
+@@ -2070,13 +2210,35 @@ wintomon(Window w)
  	if (w == root && getrootptr(&x, &y))
  		return recttomon(x, y, 1, 1);
  	for (m = mons; m; m = m->next)
@@ -426,6 +384,3 @@ index 9fd0286..7bb5307 100644
  /* There's no way to check accesses to destroyed windows, thus those cases are
   * ignored (especially on UnmapNotify's). Other types of errors call Xlibs
   * default error handler, which may call exit. */
--- 
-2.28.0
-

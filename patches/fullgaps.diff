@@ -17,15 +17,7 @@
  static void setlayout(const Arg *arg);
  static void setmfact(const Arg *arg);
  static void setup(void);
-@@ -639,6 +641,7 @@ createmon(void)
- 	m->nmaster = nmaster;
- 	m->showbar = showbar;
- 	m->topbar = topbar;
-+	m->gappx = gappx;
- 	m->lt[0] = &layouts[0];
- 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
- 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
-@@ -1498,6 +1501,16 @@ setfullscreen(Client *c, int fullscreen)
+@@ -1498,6 +1500,16 @@ setfullscreen(Client *c, int fullscreen)
  	}
  }
  
@@ -42,7 +34,7 @@
  void
  setlayout(const Arg *arg)
  {
-@@ -1684,18 +1697,18 @@ tile(Monitor *m)
+@@ -1684,18 +1696,18 @@ tile(Monitor *m)
  	if (n > m->nmaster)
  		mw = m->nmaster ? m->ww * m->mfact : 0;
  	else
