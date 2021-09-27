@@ -9,10 +9,3 @@ Appliquer les modifications:
 
 Récupérer les changements:
 - cd dwm && git pull && cd dwm && suckupdate && ..
-
-En cas de conflit:
-- Copier le code en conflit
-- git merge --abort
-- Supprimer les lignes des patchs en conflits
-- Créer une nouvelle branche pour la résolution des conflits
-- Coller le code copié qui entrait en conflit
