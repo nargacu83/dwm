@@ -28,7 +28,7 @@
 +static const char col_fg[]       = "#f8f8f2";
 +static const char col_fg_focus[] = "#f8f8f2";
 +static const char col_bg[]       = "#282a36";
-+static const char col_bg_focus[] = "#282a36";
++static const char col_bg_focus[] = "#ff5555";
 +static const char col_bd[]       = "#282a36";
 +static const char col_bd_focus[] = "#bd93f9";
 +
