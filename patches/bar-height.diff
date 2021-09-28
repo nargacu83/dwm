@@ -1,3 +1,4 @@
+
 --- a/dwm.c
 +++ b/dwm.c
 @@ -1546,7 +1546,7 @@ setup(void)
