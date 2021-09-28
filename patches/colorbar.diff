@@ -28,13 +28,7 @@
  		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
  		if (occ & 1 << i)
  			drw_rect(drw, x + boxs, boxs, boxw, boxw,
-@@ -726,17 +726,17 @@ drawbar(Monitor *m)
- 		x += w;
- 	}
- 	w = blw = TEXTW(m->ltsymbol);
--	drw_setscheme(drw, scheme[SchemeNorm]);
-+	drw_setscheme(drw, scheme[SchemeTagsNorm]);
- 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
+@@ -731,12 +731,12 @@ drawbar(Monitor *m)
  
  	if ((w = m->ww - tw - x) > bh) {
  		if (m->sel) {
