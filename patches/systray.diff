@@ -638,7 +638,7 @@
 +		w += systrayspacing;
 +		i->x = w;
 +		if (systrayiconsize >= bh) {
-+			i->y = bh / 2;
++			i->y = 0;
 +		} else {
 +			i->y = (bh - systrayiconsize) / 2;
 +		}
