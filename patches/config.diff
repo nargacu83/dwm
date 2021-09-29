@@ -25,8 +25,8 @@
 +static const int focusonwheel       = 0;
 +static const int user_bh            = 35;       /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
 +
-+static const char *fonts[]          = { "Cantarell:size=11:style=Bold" };
-+static const char dmenufont[]       = "Cantarell:size=11";
++static const char *fonts[]          = { "Cantarell:size=10:style=Bold" };
++static const char dmenufont[]       = "Cantarell:size=10";
 +
 +static const unsigned int systraypinning  = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 +static const unsigned int systrayonleft   = 1;   /* 0: systray in the right corner, >0: systray on left of status text */
@@ -102,7 +102,14 @@
  static const int nmaster     = 1;    /* number of clients in master area */
  static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
  static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
-@@ -45,7 +90,7 @@ static const Layout layouts[] = {
+@@ -40,12 +85,13 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
+ static const Layout layouts[] = {
+ 	/* symbol     arrange function */
+ 	{ "[]=",      tile },    /* first entry is default */
+-	{ "><>",      NULL },    /* no layout function means floating behavior */
++	// { "><>",      NULL },    /* no layout function means floating behavior */
+ 	{ "[M]",      monocle },
++	{ NULL,       NULL },
  };
 
  /* key definitions */
@@ -111,7 +118,7 @@
  #define TAGKEYS(KEY,TAG) \
  	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
  	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-@@ -55,46 +100,49 @@ static const Layout layouts[] = {
+@@ -55,46 +101,53 @@ static const Layout layouts[] = {
  /* helper for spawning shell commands in the pre dwm-5.0 fashion */
  #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
@@ -136,6 +143,13 @@
 -	{ MODKEY,                       XK_Return, zoom,           {0} },
 -	{ MODKEY,                       XK_Tab,    view,           {0} },
 -	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
+-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
+-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+-	{ MODKEY,                       XK_space,  setlayout,      {0} },
+-	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 +    { MODKEY|ControlMask,           XK_j,      movestack,      {.i = +1 } },
 +	{ MODKEY|ControlMask,           XK_k,      movestack,      {.i = -1 } },
 +
@@ -143,13 +157,15 @@
 +	/* { MODKEY,                       XK_Tab,    view,           {0} }, */
 +
 +	{ MODKEY,                       XK_w,      killclient,     {0} },
- 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
- 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
- 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
- 	{ MODKEY,                       XK_space,  setlayout,      {0} },
- 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
--	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
--	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
++
++	// { MODKEY|ControlMask,		XK_comma,  cyclelayout,    {.i = -1 } },
++	{ MODKEY,                       XK_Tab,    cyclelayout,    {.i = +1 } },
++
++	// { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
++	// { MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
++	// { MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
++	// { MODKEY,                       XK_space,  setlayout,      {0} },
++	{ MODKEY,                       XK_f,      togglefloating, {0} },
 +
 +	{ MODKEY,                       XK_agrave, view,           {.ui = ~0 } },
 +	{ MODKEY|ShiftMask,             XK_agrave, tag,            {.ui = ~0 } },
@@ -185,7 +201,7 @@
  };
 
  /* button definitions */
-@@ -104,7 +152,7 @@ static Button buttons[] = {
+@@ -104,7 +157,7 @@ static Button buttons[] = {
  	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
  	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
  	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
