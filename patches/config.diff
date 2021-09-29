@@ -1,7 +1,7 @@
 
 --- a/config.def.h
 +++ b/config.def.h
-@@ -1,38 +1,82 @@
+@@ -1,38 +1,83 @@
  /* See LICENSE file for copyright and license details. */
 
  /* appearance */
@@ -38,6 +38,7 @@
 +static const char col_bg_focus[] = "#ff5555";
 +static const char col_bd[]       = "#282a36";
 +static const char col_bd_focus[] = "#bd93f9";
++static const char col_bar_bg[]   = "#000000";
 +
  static const char *colors[][3]      = {
 -	/*               fg         bg         border   */
@@ -46,11 +47,11 @@
 +	/*                    fg      bg      border   */
 +	[SchemeNorm]      = { col_fg, col_bg, col_bd },
 +	[SchemeSel]       = { col_fg_focus, col_bg_focus, col_bd_focus },
-+	[SchemeStatus]    = { col_fg, col_bg, "#000000" }, // Statusbar right {text,background,not used but cannot be empty}
-+	[SchemeTagsSel]   = { col_fg, col_bg, "#000000" }, // Tagbar left selected {text,background,not used but cannot be empty}
-+    [SchemeTagsNorm]  = { col_fg, col_bg, "#000000" }, // Tagbar left unselected {text,background,not used but cannot be empty}
-+    [SchemeInfoSel]   = { col_fg, col_bg, "#000000" }, // infobar middle  selected {text,background,not used but cannot be empty}
-+    [SchemeInfoNorm]  = { col_fg, col_bg, "#000000" }, // infobar middle  unselected {text,background,not used but cannot be empty}
++	[SchemeStatus]    = { col_fg, col_bar_bg, col_bar_bg }, // Statusbar right {text,background,not used but cannot be empty}
++	[SchemeTagsSel]   = { col_fg, col_bar_bg, col_bar_bg }, // Tagbar left selected {text,background,not used but cannot be empty}
++    [SchemeTagsNorm]  = { col_fg, col_bar_bg, col_bar_bg }, // Tagbar left unselected {text,background,not used but cannot be empty}
++    [SchemeInfoSel]   = { col_fg, col_bar_bg, col_bar_bg }, // infobar middle  selected {text,background,not used but cannot be empty}
++    [SchemeInfoNorm]  = { col_fg, col_bar_bg, col_bar_bg }, // infobar middle  unselected {text,background,not used but cannot be empty}
  };
 
  /* tagging */
@@ -100,7 +101,7 @@
  static const int nmaster     = 1;    /* number of clients in master area */
  static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
  static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
-@@ -55,46 +99,49 @@ static const Layout layouts[] = {
+@@ -55,46 +100,49 @@ static const Layout layouts[] = {
  /* helper for spawning shell commands in the pre dwm-5.0 fashion */
  #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
@@ -174,7 +175,7 @@
  };
 
  /* button definitions */
-@@ -104,7 +151,7 @@ static Button buttons[] = {
+@@ -104,7 +152,7 @@ static Button buttons[] = {
  	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
  	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
  	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
