@@ -28,7 +28,7 @@
 @@ -1498,6 +1501,16 @@ setfullscreen(Client *c, int fullscreen)
  	}
  }
- 
+
 +void
 +setgaps(const Arg *arg)
 +{
@@ -70,4 +70,4 @@
 +				ty += HEIGHT(c) + m->gappx;
  		}
  }
- 
+

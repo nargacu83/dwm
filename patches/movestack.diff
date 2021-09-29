@@ -12,7 +12,7 @@
 @@ -1193,6 +1194,55 @@ movemouse(const Arg *arg)
  	}
  }
- 
+
 +void
 +movestack(const Arg *arg) {
 +	Client *c = NULL, *p = NULL, *pc = NULL, *i;

@@ -4,7 +4,7 @@
 @@ -318,6 +318,9 @@ applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact)
  	int baseismin;
  	Monitor *m = c->mon;
- 
+
 +	if (&monocle == c->mon->lt[c->mon->sellt]->arrange)
 +		return 1;
 +
