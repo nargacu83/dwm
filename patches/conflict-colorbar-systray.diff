@@ -9,8 +9,8 @@
 -		tw = TEXTW(stext) - lrpad + 2; /* 2px right padding */
 -		drw_text(drw, m->ww - tw, 0, tw, bh, 0, stext, 0);
 +		drw_setscheme(drw, scheme[SchemeTagsNorm]);
-+		tw = TEXTW(stext) - lrpad / 2 + 2; /* 2px extra right padding */
-+		drw_text(drw, m->ww - tw - stw, 0, tw, bh, lrpad / 2 - 2, stext, 0);
++		tw = TEXTW(stext); /* 2px extra right padding */
++		drw_text(drw, m->ww - tw - stw, 0, tw, bh, lrpad / 2, stext, 0);
  	}
 
 +	resizebarwin(m);
