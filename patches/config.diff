@@ -1,7 +1,7 @@
 
 --- a/config.def.h
 +++ b/config.def.h
-@@ -1,38 +1,83 @@
+@@ -1,38 +1,86 @@
  /* See LICENSE file for copyright and license details. */
 
  /* appearance */
@@ -24,6 +24,9 @@
 -	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
 +static const int focusonwheel       = 0;
 +static const int user_bh            = 35;       /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
++
++static const int horizpadbar        = 2;        /* horizontal padding for statusbar */
++static const int vertpadbar         = 0;        /* vertical padding for statusbar */
 +
 +static const char *fonts[]          = { "Cantarell:size=10:style=Bold" };
 +static const char dmenufont[]       = "Cantarell:size=10";
@@ -102,7 +105,7 @@
  static const int nmaster     = 1;    /* number of clients in master area */
  static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
  static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
-@@ -40,12 +85,13 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
+@@ -40,12 +88,13 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
  static const Layout layouts[] = {
  	/* symbol     arrange function */
  	{ "[]=",      tile },    /* first entry is default */
@@ -118,7 +121,7 @@
  #define TAGKEYS(KEY,TAG) \
  	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
  	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-@@ -55,46 +101,53 @@ static const Layout layouts[] = {
+@@ -55,46 +104,53 @@ static const Layout layouts[] = {
  /* helper for spawning shell commands in the pre dwm-5.0 fashion */
  #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
@@ -201,7 +204,7 @@
  };
 
  /* button definitions */
-@@ -104,7 +157,7 @@ static Button buttons[] = {
+@@ -104,7 +160,7 @@ static Button buttons[] = {
  	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
  	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
  	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
