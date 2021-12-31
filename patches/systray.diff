@@ -215,7 +215,7 @@
  }
 
  void
-@@ -696,12 +789,15 @@ dirtomon(int dir)
+@@ -696,15 +789,18 @@ dirtomon(int dir)
  void
  drawbar(Monitor *m)
  {
@@ -225,6 +225,9 @@
  	int boxw = drw->fonts->h / 6 + 2;
  	unsigned int i, occ = 0, urg = 0;
  	Client *c;
+
+ 	if (!m->showbar)
+ 		return;
 
 +	if(showsystray && m == systraytomon(m) && !systrayonleft)
 +		stw = getsystraywidth();
