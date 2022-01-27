@@ -1,7 +1,7 @@
 
 --- a/dwm.c
 +++ b/dwm.c
-@@ -1545,8 +1545,8 @@ setup(void)
+@@ -1548,8 +1548,8 @@ setup(void)
  	drw = drw_create(dpy, screen, root, sw, sh);
  	if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
  		die("no fonts could be loaded.");

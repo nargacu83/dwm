@@ -1,7 +1,7 @@
 
 --- a/dwm.c
 +++ b/dwm.c
-@@ -1057,6 +1057,8 @@ manage(Window w, XWindowAttributes *wa)
+@@ -1060,6 +1060,8 @@ manage(Window w, XWindowAttributes *wa)
  	updatewindowtype(c);
  	updatesizehints(c);
  	updatewmhints(c);

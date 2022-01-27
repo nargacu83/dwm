@@ -140,7 +140,8 @@
  	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 +
  	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
- 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
+-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
++	{ MODKEY,                       XK_o,      incnmaster,     {.i = -1 } },
  	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
  	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 -	{ MODKEY,                       XK_Return, zoom,           {0} },
@@ -159,7 +160,7 @@
 +	/* { MODKEY,                       XK_Return, zoom,           {0} }, */
 +	/* { MODKEY,                       XK_Tab,    view,           {0} }, */
 +
-+	{ MODKEY,                       XK_w,      killclient,     {0} },
++	{ MODKEY,                       XK_q,      killclient,     {0} },
 +
 +	// { MODKEY|ControlMask,		XK_comma,  cyclelayout,    {.i = -1 } },
 +	{ MODKEY,                       XK_Tab,    cyclelayout,    {.i = +1 } },
@@ -215,7 +216,7 @@
  	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 --- a/dwm.c
 +++ b/dwm.c
-@@ -1640,8 +1640,6 @@ sigchld(int unused)
+@@ -1643,8 +1643,6 @@ sigchld(int unused)
  void
  spawn(const Arg *arg)
  {

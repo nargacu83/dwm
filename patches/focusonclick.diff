@@ -52,7 +52,7 @@
  		XAllowEvents(dpy, ReplayPointer, CurrentTime);
  		click = ClkClientWin;
  	}
-@@ -752,25 +749,6 @@ drawbars(void)
+@@ -755,25 +752,6 @@ drawbars(void)
  		drawbar(m);
  }
 
@@ -78,7 +78,7 @@
  void
  expose(XEvent *e)
  {
-@@ -942,7 +920,7 @@ grabbuttons(Client *c, int focused)
+@@ -945,7 +923,7 @@ grabbuttons(Client *c, int focused)
  					XGrabButton(dpy, buttons[i].button,
  						buttons[i].mask | modifiers[j],
  						c->win, False, BUTTONMASK,
@@ -87,7 +87,7 @@
  	}
  }
 
-@@ -1116,23 +1094,6 @@ monocle(Monitor *m)
+@@ -1119,23 +1097,6 @@ monocle(Monitor *m)
  		resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, 0);
  }
 

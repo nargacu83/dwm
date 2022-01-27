@@ -9,7 +9,7 @@
  static Client *nexttiled(Client *c);
  static void pop(Client *);
  static void propertynotify(XEvent *e);
-@@ -1193,6 +1194,55 @@ movemouse(const Arg *arg)
+@@ -1196,6 +1197,55 @@ movemouse(const Arg *arg)
  	}
  }
 
