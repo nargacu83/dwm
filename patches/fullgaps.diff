@@ -1,5 +1,4 @@
-diff --git a/dwm.c b/dwm.c
-index 4465af1..4363627 100644
+
 --- a/dwm.c
 +++ b/dwm.c
 @@ -119,6 +119,7 @@ struct Monitor {
