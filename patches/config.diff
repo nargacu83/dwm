@@ -50,11 +50,11 @@
 +	/*                    fg            bg            border       */
 +	[SchemeNorm]      = { col_fg,       col_bar_bg,   col_bd       },
 +	[SchemeSel]       = { col_fg_focus, col_bg_focus, col_bd_focus },
-+	[SchemeStatus]    = { col_fg,       col_bar_bg,   col_bar_bg   }, // Statusbar right {text,background,not used but cannot be empty}
-+	[SchemeTagsSel]   = { col_fg,       col_bg_focus, col_bar_bg   }, // Tagbar left selected {text,background,not used but cannot be empty}
-+    [SchemeTagsNorm]  = { col_fg,       col_bar_bg,   col_bar_bg   }, // Tagbar left unselected {text,background,not used but cannot be empty}
-+    [SchemeInfoSel]   = { col_fg,       col_bar_bg,   col_bar_bg   }, // infobar middle  selected {text,background,not used but cannot be empty}
-+    [SchemeInfoNorm]  = { col_fg,       col_bar_bg,   col_bar_bg   }, // infobar middle  unselected {text,background,not used but cannot be empty}
++	/* [SchemeStatus]    = { col_fg,       col_bar_bg,   col_bar_bg   }, // Statusbar right {text,background,not used but cannot be empty} */
++	/* [SchemeTagsSel]   = { col_fg,       col_bg_focus, col_bar_bg   }, // Tagbar left selected {text,background,not used but cannot be empty} */
++    /* [SchemeTagsNorm]  = { col_fg,       col_bar_bg,   col_bar_bg   }, // Tagbar left unselected {text,background,not used but cannot be empty} */
++    /* [SchemeInfoSel]   = { col_fg,       col_bar_bg,   col_bar_bg   }, // infobar middle  selected {text,background,not used but cannot be empty} */
++    /* [SchemeInfoNorm]  = { col_fg,       col_bar_bg,   col_bar_bg   }, // infobar middle  unselected {text,background,not used but cannot be empty} */
  };
 
  /* tagging */
