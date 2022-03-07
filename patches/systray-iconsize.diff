@@ -1,5 +1,4 @@
-diff --git a/dwm.c b/dwm.c
-index 8153bfe..2527c08 100644
+
 --- a/dwm.c
 +++ b/dwm.c
 @@ -2326,23 +2326,18 @@ updatestatus(void)
@@ -36,20 +35,18 @@ index 8153bfe..2527c08 100644
 +		i->w = systrayiconsize;
  	}
  }
- 
-@@ -2421,6 +2416,12 @@ updatesystray(void)
+
+@@ -2421,7 +2416,12 @@ updatesystray(void)
  		XMapRaised(dpy, i->win);
  		w += systrayspacing;
  		i->x = w;
-+		i->x = w;
+-		XMoveResizeWindow(dpy, i->win, i->x, 0, i->w, i->h);
 +		if (systrayiconsize >= bh) {
 +			i->y = 0;
 +		} else {
 +			i->y = (bh - systrayiconsize) / 2;
 +		}
- 		XMoveResizeWindow(dpy, i->win, i->x, 0, i->w, i->h);
++		XMoveResizeWindow(dpy, i->win, i->x, i->y, i->w, i->h);
  		w += i->w;
  		if (i->mon != m)
--- 
-2.35.1
-
+ 			i->mon = m;
