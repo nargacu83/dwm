@@ -41,37 +41,12 @@ patches_rules=(
     "systray-iconsize.diff > status2d-systray.diff"
 )
 
-function config_merge_rules(){
-    for (( i=0; i<${#patches_rules[@]}; i++ )); do
-    IFS=" > " read -ra rule <<< ${patches_rules[$i]}
-    patch=${rule[0]}
-    branch=${rule[1]}
-
-    print_message "Loading ${patch}" ${YELLOW}
-    git checkout ${branch} &&
-    git checkout -b ${patch} &&
-    git apply ${PATCHES_DIRECTORY}/${patch} &&
-    git add -A &&
-    git commit -m ${patch}
-    print_message "Merging ${patch} into ${branch}" ${YELLOW}
-    git checkout ${branch} &&
-    git merge ${patch} -m "${patch} into ${branch}" || exit 1
-    done
+function print_message() {
+    echo -e "${BOLD}${2}==>${NC} ${BOLD}${1}${NORMAL}"
 }
 
-function config_install(){
-    print_message "Installing..." ${BLUE}
-
-    config_clean
-    config_load
-    config_merge_rules
-    config_merge
-
-    make && sudo make clean install || exit 1
-
-    config_clean
-
-    print_message "Install complete." ${GREEN}
+function print_inner_message() {
+    echo -e "${BOLD}${BLUE} ->${NC} ${BOLD}${1}${NORMAL}"
 }
 
 function config_build(){
@@ -85,6 +60,7 @@ function config_load(){
 
     # Create a git branch per patch and apply them
     for patch in ${patches[@]}; do
+    print_inner_message "Loading ${patch}"
     git checkout master &&
     git checkout -b $patch &&
     git apply $PATCHES_DIRECTORY/$patch &&
@@ -97,15 +73,63 @@ function config_load(){
     print_message "Loading complete." ${GREEN}
 }
 
+function config_diff(){
+    print_message "Diff..." ${BLUE}
+
+    git checkout master && make clean && git reset --hard origin/master
+    for f in *.def.h; do
+    [ -f "${f:0:${#f}-6}.h" ] && rm -f "${f:0:${#f}-6}.h" || continue
+    done
+    for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d'/' -f3); do
+    if [ "$branch" != "master" ];then
+        echo -e "" | cat "$PATCHES_DIRECTORY/headers/$branch" - > "$PATCHES_DIRECTORY/$branch" 2> /dev/null
+        git diff master..$branch | sed -e '/^diff/,/^index/ {d}' | sed -e 's/\s\+$//' >> "$PATCHES_DIRECTORY/$branch"
+    fi
+    done
+    print_message "Diff complete." ${GREEN}
+}
+
+
+function config_merge_rules(){
+    print_inner_message "Merging rules..."
+    for (( i=0; i<${#patches_rules[@]}; i++ )); do
+    IFS=" > " read -ra rule <<< ${patches_rules[$i]}
+    patch=${rule[0]}
+    branch=${rule[1]}
+
+    print_inner_message "Loading ${patch}"
+    git checkout ${branch} &&
+    git checkout -b ${patch} &&
+    git apply ${PATCHES_DIRECTORY}/${patch} &&
+    git add -A &&
+    git commit -m ${patch}
+    print_inner_message "Merging ${patch} into ${branch}"
+    git checkout ${branch} &&
+    git merge ${patch} -m "${patch} into ${branch}" || exit 1
+    done
+}
+
 function config_merge(){
     print_message "Merging..." ${BLUE}
+    config_merge_rules
 
     git checkout -b custom
     for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d '/' -f3); do
         if [ "$branch" == "master" ] || [ "$branch" == "custom" ];then
             continue
         fi
-        echo "Merging $branch"
+
+        # for (( i=0; i<${#patches_rules[@]}; i++ )); do
+        # IFS=" > " read -ra rule <<< ${patches_rules[$i]}
+        # patch=${rule[0]}
+        # base_branch=${rule[1]}
+        # if [ "$branch" != "$base_branch" ];then
+        #     continue
+        # fi
+
+        # done
+
+        print_inner_message "Merging $branch"
         git merge $branch -m $branch || exit 1
     done
 
@@ -129,24 +153,18 @@ function config_clean(){
     print_message "Clean complete." ${GREEN}
 }
 
-function config_diff(){
-    print_message "Diff..." ${BLUE}
+function config_install(){
+    print_message "Installing..." ${BLUE}
 
-    git checkout master && make clean && git reset --hard origin/master
-    for f in *.def.h; do
-    [ -f "${f:0:${#f}-6}.h" ] && rm -f "${f:0:${#f}-6}.h" || continue
-    done
-    for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d'/' -f3); do
-    if [ "$branch" != "master" ];then
-        echo -e "" | cat "$PATCHES_DIRECTORY/headers/$branch" - > "$PATCHES_DIRECTORY/$branch" 2> /dev/null
-        git diff master..$branch | sed -e '/^diff/,/^index/ {d}' | sed -e 's/\s\+$//' >> "$PATCHES_DIRECTORY/$branch"
-    fi
-    done
-    print_message "Diff complete." ${GREEN}
-}
+    config_clean
+    config_load
+    config_merge
 
-function print_message() {
-    echo -e "${BOLD}${2}==>${NC} ${BOLD}${1}${NORMAL}"
+    make && sudo make clean install || exit 1
+
+    config_clean
+
+    print_message "Install complete." ${GREEN}
 }
 
 # Check the directory validity
