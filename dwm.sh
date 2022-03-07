@@ -34,10 +34,10 @@ patches=(
     # "bar.diff"
 )
 
-# set a patch rule
+# set a patch child
 # Indicate a patch done on top of another patch
 # eg. patch.diff > base.diff
-patches_rules=(
+patches_children=(
     "systray-iconsize.diff > status2d-systray.diff"
 )
 
@@ -55,12 +55,12 @@ function config_build(){
     print_message "Build complete." ${GREEN}
 }
 
-function config_load_rules(){
-    print_inner_message "Loading rules..."
-    for (( i=0; i<${#patches_rules[@]}; i++ )); do
-    IFS=" > " read -ra rule <<< ${patches_rules[$i]}
-    patch=${rule[0]}
-    branch=${rule[1]}
+function config_load_children(){
+    print_inner_message "Loading children..."
+    for (( i=0; i<${#patches_children[@]}; i++ )); do
+    IFS=" > " read -ra child <<< ${patches_children[$i]}
+    patch=${child[0]}
+    branch=${child[1]}
     print_inner_message "Loading ${patch}"
     git checkout ${branch} &&
     git checkout -b ${patch} &&
@@ -83,7 +83,7 @@ function config_load(){
     git commit -m $patch || exit 1
     done
 
-    config_load_rules
+    config_load_children
 
     git checkout master
 
@@ -91,18 +91,18 @@ function config_load(){
 }
 
 
-function config_diff_rules(){
-    print_message "Diff rules..." ${BLUE}
+function config_diff_children(){
+    print_message "Diff children..." ${BLUE}
 
     git checkout master && make clean && git reset --hard origin/master
     for f in *.def.h; do
     [ -f "${f:0:${#f}-6}.h" ] && rm -f "${f:0:${#f}-6}.h" || continue
     done
 
-    for (( i=0; i<${#patches_rules[@]}; i++ )); do
-    IFS=" > " read -ra rule <<< ${patches_rules[$i]}
-    patch=${rule[0]}
-    branch=${rule[1]}
+    for (( i=0; i<${#patches_children[@]}; i++ )); do
+    IFS=" > " read -ra child <<< ${patches_children[$i]}
+    patch=${child[0]}
+    branch=${child[1]}
     echo -e "" | cat "$PATCHES_DIRECTORY/headers/$patch" - > "$PATCHES_DIRECTORY/$patch" 2> /dev/null
     git diff ${branch}..${patch} | sed -e '/^diff/,/^index/ {d}' | sed -e 's/\s\+$//' >> "$PATCHES_DIRECTORY/$patch"
     done
@@ -110,7 +110,7 @@ function config_diff_rules(){
 
 function config_diff(){
     print_message "Diff..." ${BLUE}
-    config_diff_rules
+    config_diff_children
 
     git checkout master && make clean && git reset --hard origin/master
     for f in *.def.h; do
@@ -118,11 +118,11 @@ function config_diff(){
     done
 
     for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d'/' -f3); do
-    # ignore rules branch
+    # ignore children branch
     ignore=0
-    for (( i=0; i<${#patches_rules[@]}; i++ )); do
-    IFS=" > " read -ra rule <<< ${patches_rules[$i]}
-    patch=${rule[0]}
+    for (( i=0; i<${#patches_children[@]}; i++ )); do
+    IFS=" > " read -ra child <<< ${patches_children[$i]}
+    patch=${child[0]}
     if [ "$branch" == "$patch" ];then
     ignore=1
     fi
@@ -136,12 +136,12 @@ function config_diff(){
 }
 
 
-function config_merge_rules(){
-    print_inner_message "Merging rules..."
-    for (( i=0; i<${#patches_rules[@]}; i++ )); do
-    IFS=" > " read -ra rule <<< ${patches_rules[$i]}
-    patch=${rule[0]}
-    branch=${rule[1]}
+function config_merge_children(){
+    print_inner_message "Merging children..."
+    for (( i=0; i<${#patches_children[@]}; i++ )); do
+    IFS=" > " read -ra child <<< ${patches_children[$i]}
+    patch=${child[0]}
+    branch=${child[1]}
     print_inner_message "Loading ${patch}"
     git checkout ${branch} &&
     git checkout -b ${patch} &&
@@ -157,7 +157,7 @@ function config_merge_rules(){
 
 function config_merge(){
     print_message "Merging..." ${BLUE}
-    config_merge_rules
+    config_merge_children
 
     git checkout -b custom
     for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d '/' -f3); do
