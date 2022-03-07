@@ -96,7 +96,6 @@ function config_merge_rules(){
     IFS=" > " read -ra rule <<< ${patches_rules[$i]}
     patch=${rule[0]}
     branch=${rule[1]}
-
     print_inner_message "Loading ${patch}"
     git checkout ${branch} &&
     git checkout -b ${patch} &&
@@ -118,16 +117,6 @@ function config_merge(){
         if [ "$branch" == "master" ] || [ "$branch" == "custom" ];then
             continue
         fi
-
-        # for (( i=0; i<${#patches_rules[@]}; i++ )); do
-        # IFS=" > " read -ra rule <<< ${patches_rules[$i]}
-        # patch=${rule[0]}
-        # base_branch=${rule[1]}
-        # if [ "$branch" != "$base_branch" ];then
-        #     continue
-        # fi
-
-        # done
 
         print_inner_message "Merging $branch"
         git merge $branch -m $branch || exit 1
