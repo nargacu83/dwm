@@ -104,7 +104,8 @@ function config_merge_rules(){
     git commit -m ${patch}
     print_inner_message "Merging ${patch} into ${branch}"
     git checkout ${branch} &&
-    git merge ${patch} -m "${patch} into ${branch}" || exit 1
+    git merge ${patch} -m "${patch} into ${branch}" || exit 1 &&
+    git branch --delete ${patch}
     done
 }
 
