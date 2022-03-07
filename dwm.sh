@@ -34,11 +34,37 @@ patches=(
     # "bar.diff"
 )
 
+# set a patch rule
+# Indicate a patch done on top of another patch
+# eg. patch.diff > base.diff
+patches_rules=(
+    "systray-iconsize.diff > status2d-systray.diff"
+)
+
+function config_merge_rules(){
+    for (( i=0; i<${#patches_rules[@]}; i++ )); do
+    IFS=" > " read -ra rule <<< ${patches_rules[$i]}
+    patch=${rule[0]}
+    branch=${rule[1]}
+
+    print_message "Loading ${patch}" ${YELLOW}
+    git checkout ${branch} &&
+    git checkout -b ${patch} &&
+    git apply ${PATCHES_DIRECTORY}/${patch} &&
+    git add -A &&
+    git commit -m ${patch}
+    print_message "Merging ${patch} into ${branch}" ${YELLOW}
+    git checkout ${branch} &&
+    git merge ${patch} -m "${patch} into ${branch}" || exit 1
+    done
+}
+
 function config_install(){
     print_message "Installing..." ${BLUE}
 
     config_clean
     config_load
+    config_merge_rules
     config_merge
 
     make && sudo make clean install || exit 1
@@ -55,7 +81,7 @@ function config_build(){
 }
 
 function config_load(){
-    print_message "Merging..." ${BLUE}
+    print_message "Loading..." ${BLUE}
 
     # Create a git branch per patch and apply them
     for patch in ${patches[@]}; do
@@ -68,14 +94,14 @@ function config_load(){
 
     git checkout master
 
-    print_message "Merge complete." ${GREEN}
+    print_message "Loading complete." ${GREEN}
 }
 
 function config_merge(){
     print_message "Merging..." ${BLUE}
 
     git checkout -b custom
-    for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d'/' -f3); do
+    for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d '/' -f3); do
         if [ "$branch" == "master" ] || [ "$branch" == "custom" ];then
             continue
         fi
@@ -83,7 +109,7 @@ function config_merge(){
         git merge $branch -m $branch || exit 1
     done
 
-    print_message "Merge complete."
+    print_message "Merge complete." ${GREEN}
 }
 
 function config_clean(){
@@ -120,7 +146,7 @@ function config_diff(){
 }
 
 function print_message() {
-    echo -e "${BOLD}${2} ::${NC} ${BOLD}${1}${NORMAL}"
+    echo -e "${BOLD}${2}==>${NC} ${BOLD}${1}${NORMAL}"
 }
 
 # Check the directory validity
