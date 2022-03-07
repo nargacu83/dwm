@@ -55,6 +55,21 @@ function config_build(){
     print_message "Build complete." ${GREEN}
 }
 
+function config_load_rules(){
+    print_inner_message "Loading rules..."
+    for (( i=0; i<${#patches_rules[@]}; i++ )); do
+    IFS=" > " read -ra rule <<< ${patches_rules[$i]}
+    patch=${rule[0]}
+    branch=${rule[1]}
+    print_inner_message "Loading ${patch}"
+    git checkout ${branch} &&
+    git checkout -b ${patch} &&
+    git apply ${PATCHES_DIRECTORY}/${patch} &&
+    git add -A &&
+    git commit -m ${patch}
+    done
+}
+
 function config_load(){
     print_message "Loading..." ${BLUE}
 
@@ -68,20 +83,51 @@ function config_load(){
     git commit -m $patch || exit 1
     done
 
+    config_load_rules
+
     git checkout master
 
     print_message "Loading complete." ${GREEN}
 }
 
-function config_diff(){
-    print_message "Diff..." ${BLUE}
+
+function config_diff_rules(){
+    print_message "Diff rules..." ${BLUE}
 
     git checkout master && make clean && git reset --hard origin/master
     for f in *.def.h; do
     [ -f "${f:0:${#f}-6}.h" ] && rm -f "${f:0:${#f}-6}.h" || continue
     done
+
+    for (( i=0; i<${#patches_rules[@]}; i++ )); do
+    IFS=" > " read -ra rule <<< ${patches_rules[$i]}
+    patch=${rule[0]}
+    branch=${rule[1]}
+    echo -e "" | cat "$PATCHES_DIRECTORY/headers/$patch" - > "$PATCHES_DIRECTORY/$patch" 2> /dev/null
+    git diff ${branch}..${patch} | sed -e '/^diff/,/^index/ {d}' | sed -e 's/\s\+$//' >> "$PATCHES_DIRECTORY/$patch"
+    done
+}
+
+function config_diff(){
+    print_message "Diff..." ${BLUE}
+    config_diff_rules
+
+    git checkout master && make clean && git reset --hard origin/master
+    for f in *.def.h; do
+    [ -f "${f:0:${#f}-6}.h" ] && rm -f "${f:0:${#f}-6}.h" || continue
+    done
+
     for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d'/' -f3); do
-    if [ "$branch" != "master" ];then
+    # ignore rules branch
+    ignore=0
+    for (( i=0; i<${#patches_rules[@]}; i++ )); do
+    IFS=" > " read -ra rule <<< ${patches_rules[$i]}
+    patch=${rule[0]}
+    if [ "$branch" == "$patch" ];then
+    ignore=1
+    fi
+    done
+    if [ "$branch" != "master" ] && [ $ignore == 0 ];then
         echo -e "" | cat "$PATCHES_DIRECTORY/headers/$branch" - > "$PATCHES_DIRECTORY/$branch" 2> /dev/null
         git diff master..$branch | sed -e '/^diff/,/^index/ {d}' | sed -e 's/\s\+$//' >> "$PATCHES_DIRECTORY/$branch"
     fi
