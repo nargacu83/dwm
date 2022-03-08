@@ -30,15 +30,17 @@ patches=(
     "bar-height.diff"
     "colorbar.diff"
     "status2d-systray.diff"
+    "focusonclick.diff"
     "steam.diff"
     # "bar.diff"
 )
 
-# set a patch child
 # Indicate a patch done on top of another patch
 # eg. patch.diff > base.diff
 patches_children=(
     "systray-iconsize.diff > status2d-systray.diff"
+    "conflict-status2d-systray.diff > status2d-systray.diff"
+    "conflict-focusonclick.diff > focusonclick.diff"
 )
 
 function print_message() {
@@ -61,6 +63,12 @@ function config_load_children(){
     IFS=" > " read -ra child <<< ${patches_children[$i]}
     patch=${child[0]}
     branch=${child[1]}
+
+    # ignore loading
+    if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ] || [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
+        continue
+    fi
+
     print_inner_message "Loading ${patch}"
     git checkout ${branch} &&
     git checkout -b ${patch} &&
@@ -75,6 +83,12 @@ function config_load(){
 
     # Create a git branch per patch and apply them
     for patch in ${patches[@]}; do
+
+    # ignore loading
+    if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
+        continue
+    fi
+
     print_inner_message "Loading ${patch}"
     git checkout master &&
     git checkout -b $patch &&
@@ -142,6 +156,12 @@ function config_merge_children(){
     IFS=" > " read -ra child <<< ${patches_children[$i]}
     patch=${child[0]}
     branch=${child[1]}
+
+    # ignore merging
+    if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ] || [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
+        continue
+    fi
+
     print_inner_message "Merging ${patch} into ${branch}"
     git checkout ${branch} &&
     git merge ${patch} -m "${patch} into ${branch}" || exit 1 &&

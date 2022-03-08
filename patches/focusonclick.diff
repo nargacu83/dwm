@@ -1,5 +1,4 @@
-diff --git a/dwm.c b/dwm.c
-index 664c527..de3e883 100644
+
 --- a/dwm.c
 +++ b/dwm.c
 @@ -163,7 +163,6 @@ static void detachstack(Client *c);
@@ -33,7 +32,7 @@ index 664c527..de3e883 100644
  	[UnmapNotify] = unmapnotify
  };
 @@ -425,7 +421,8 @@ buttonpress(XEvent *e)
- 
+
  	click = ClkRootWin;
  	/* focus monitor if necessary */
 -	if ((m = wintomon(ev->window)) && m != selmon) {
@@ -53,10 +52,10 @@ index 664c527..de3e883 100644
  		XAllowEvents(dpy, ReplayPointer, CurrentTime);
  		click = ClkClientWin;
  	}
-@@ -752,25 +749,6 @@ drawbars(void)
+@@ -755,25 +752,6 @@ drawbars(void)
  		drawbar(m);
  }
- 
+
 -void
 -enternotify(XEvent *e)
 -{
@@ -79,10 +78,10 @@ index 664c527..de3e883 100644
  void
  expose(XEvent *e)
  {
-@@ -1116,23 +1094,6 @@ monocle(Monitor *m)
+@@ -1119,23 +1097,6 @@ monocle(Monitor *m)
  		resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, 0);
  }
- 
+
 -void
 -motionnotify(XEvent *e)
 -{
@@ -103,6 +102,3 @@ index 664c527..de3e883 100644
  void
  movemouse(const Arg *arg)
  {
--- 
-2.30.0
-
