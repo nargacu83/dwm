@@ -142,12 +142,6 @@ function config_merge_children(){
     IFS=" > " read -ra child <<< ${patches_children[$i]}
     patch=${child[0]}
     branch=${child[1]}
-    print_inner_message "Loading ${patch}"
-    git checkout ${branch} &&
-    git checkout -b ${patch} &&
-    git apply ${PATCHES_DIRECTORY}/${patch} &&
-    git add -A &&
-    git commit -m ${patch}
     print_inner_message "Merging ${patch} into ${branch}"
     git checkout ${branch} &&
     git merge ${patch} -m "${patch} into ${branch}" || exit 1 &&
