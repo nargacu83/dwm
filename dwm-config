@@ -32,7 +32,6 @@ patches=(
     "status2d-systray.diff"
     "focusonclick.diff"
     "steam.diff"
-    # "bar.diff"
 )
 
 # Indicate a patch done on top of another patch
