@@ -41,8 +41,8 @@ patches_children=(
     "conflict-status2d-systray.diff > status2d-systray.diff"
     "conflict-focusonclick.diff > focusonclick.diff"
     # Fixed conflict between tagsizecenter and colorbar
-    "conflict-tagsizecenter.diff > tagsizecenter.diff"
-    "conflict-colorbar.diff > colorbar.diff"
+    # "conflict-tagsizecenter.diff > tagsizecenter.diff"
+    # "conflict-colorbar.diff > colorbar.diff"
 )
 
 function print_message() {
