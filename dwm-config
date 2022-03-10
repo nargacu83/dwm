@@ -32,6 +32,7 @@ patches=(
 )
 
 # Indicate a patch done on top of another patch
+# Can be useful to resolve conflict between patches
 # eg. patch.diff > base.diff
 patches_children=(
     # Custom patch for controlling the icon size of the system tray and centers it vertically
@@ -39,7 +40,9 @@ patches_children=(
     # Fixed conflict between status2d-systray and focusonclick
     "conflict-status2d-systray.diff > status2d-systray.diff"
     "conflict-focusonclick.diff > focusonclick.diff"
+    # Fixed conflict between tagsizecenter and colorbar
     "conflict-tagsizecenter.diff > tagsizecenter.diff"
+    "conflict-colorbar.diff > colorbar.diff"
 )
 
 function print_message() {
@@ -70,12 +73,12 @@ function config_load_children(){
         branch=${child[1]}
 
         # ignore loading
-        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
-            print_inner_message "File don't exist: ${patch}"
-            continue
-        fi
         if [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
             print_inner_message "File don't exist: ${branch}"
+            continue
+        fi
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
+            print_inner_message "File don't exist: ${patch}"
             continue
         fi
 
@@ -170,12 +173,12 @@ function config_merge_children(){
         branch=${child[1]}
 
         # ignore merging
-        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
-            print_inner_message "File don't exist: ${patch}"
-            continue
-        fi
         if [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
             print_inner_message "File don't exist: ${branch}"
+            continue
+        fi
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
+            print_inner_message "File don't exist: ${patch}"
             continue
         fi
 
