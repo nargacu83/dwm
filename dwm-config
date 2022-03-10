@@ -234,6 +234,10 @@ while [ "${1:-}" != "" ]; do
     -c|--clean)
       config_clean
       ;;
+    --clean-abort)
+      git merge --abort
+      config_clean
+      ;;
     -d|--diff)
       config_diff
       ;;
