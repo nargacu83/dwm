@@ -39,6 +39,7 @@ patches_children=(
     # Fixed conflict between status2d-systray and focusonclick
     "conflict-status2d-systray.diff > status2d-systray.diff"
     "conflict-focusonclick.diff > focusonclick.diff"
+    "conflict-tagsizecenter.diff > tagsizecenter.diff"
 )
 
 function print_message() {
@@ -69,8 +70,12 @@ function config_load_children(){
         branch=${child[1]}
 
         # ignore loading
-        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ] || [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
-            print_inner_message "Ignoring: ${PATCHES_DIRECTORY}/${patch} or ${PATCHES_DIRECTORY}/${branch}"
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
+            print_inner_message "File don't exist: ${patch}"
+            continue
+        fi
+        if [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
+            print_inner_message "File don't exist: ${branch}"
             continue
         fi
 
@@ -91,7 +96,7 @@ function config_load(){
 
         # ignore if file doesn't exist
         if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
-            print_inner_message "Ignoring: ${PATCHES_DIRECTORY}/${patch} or ${PATCHES_DIRECTORY}/${branch}"
+            print_inner_message "File don't exist: ${patch}"
             continue
         fi
 
@@ -165,8 +170,12 @@ function config_merge_children(){
         branch=${child[1]}
 
         # ignore merging
-        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ] || [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
-            print_inner_message "Ignoring: ${PATCHES_DIRECTORY}/${patch} or ${PATCHES_DIRECTORY}/${branch}"
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
+            print_inner_message "File don't exist: ${patch}"
+            continue
+        fi
+        if [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
+            print_inner_message "File don't exist: ${branch}"
             continue
         fi
 
