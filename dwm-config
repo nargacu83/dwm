@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-###
-### Install script for my DWM
-###
-
 SCRIPT_DIR="$(pwd)"
 PATCHES_DIRECTORY="$(pwd)/patches"
 DWM_DIRECTORY="$(pwd)/dwm"
@@ -53,6 +49,12 @@ function print_inner_message() {
     echo -e "${BOLD}${BLUE} ->${NC} ${BOLD}${1}${NORMAL}"
 }
 
+function delete_build_files() {
+    for f in *.def.h; do
+        [ -f "${f:0:${#f}-6}.h" ] && rm -f "${f:0:${#f}-6}.h" || continue
+    done
+}
+
 function config_build(){
     print_message "Building..." ${BLUE}
     make
@@ -62,21 +64,22 @@ function config_build(){
 function config_load_children(){
     print_inner_message "Loading children..."
     for (( i=0; i<${#patches_children[@]}; i++ )); do
-    IFS=" > " read -ra child <<< ${patches_children[$i]}
-    patch=${child[0]}
-    branch=${child[1]}
+        IFS=" > " read -ra child <<< ${patches_children[$i]}
+        patch=${child[0]}
+        branch=${child[1]}
 
-    # ignore loading
-    if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ] || [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
-        continue
-    fi
+        # ignore loading
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ] || [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
+            print_inner_message "Ignoring: ${PATCHES_DIRECTORY}/${patch} or ${PATCHES_DIRECTORY}/${branch}"
+            continue
+        fi
 
-    print_inner_message "Loading ${patch}"
-    git checkout ${branch} &&
-    git checkout -b ${patch} &&
-    git apply ${PATCHES_DIRECTORY}/${patch} &&
-    git add -A &&
-    git commit -m ${patch}
+        print_inner_message "Loading ${patch}"
+        git checkout ${branch} &&
+        git checkout -b ${patch} &&
+        git apply ${PATCHES_DIRECTORY}/${patch} &&
+        git add -A &&
+        git commit -m ${patch}
     done
 }
 
@@ -86,17 +89,18 @@ function config_load(){
     # Create a git branch per patch and apply them
     for patch in ${patches[@]}; do
 
-    # ignore loading
-    if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
-        continue
-    fi
+        # ignore if file doesn't exist
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
+            print_inner_message "Ignoring: ${PATCHES_DIRECTORY}/${patch} or ${PATCHES_DIRECTORY}/${branch}"
+            continue
+        fi
 
-    print_inner_message "Loading ${patch}"
-    git checkout master &&
-    git checkout -b $patch &&
-    git apply $PATCHES_DIRECTORY/$patch &&
-    git add -A &&
-    git commit -m $patch || exit 1
+        print_inner_message "Loading ${patch}"
+        git checkout master &&
+        git checkout -b $patch &&
+        git apply $PATCHES_DIRECTORY/$patch &&
+        git add -A &&
+        git commit -m $patch || exit 1
     done
 
     config_load_children
@@ -111,16 +115,14 @@ function config_diff_children(){
     print_message "Diff children..." ${BLUE}
 
     git checkout master && make clean && git reset --hard origin/master
-    for f in *.def.h; do
-    [ -f "${f:0:${#f}-6}.h" ] && rm -f "${f:0:${#f}-6}.h" || continue
-    done
+    delete_build_files
 
     for (( i=0; i<${#patches_children[@]}; i++ )); do
-    IFS=" > " read -ra child <<< ${patches_children[$i]}
-    patch=${child[0]}
-    branch=${child[1]}
-    echo -e "" | cat "$PATCHES_DIRECTORY/headers/$patch" - > "$PATCHES_DIRECTORY/$patch" 2> /dev/null
-    git diff ${branch}..${patch} | sed -e '/^diff/,/^index/ {d}' | sed -e 's/\s\+$//' >> "$PATCHES_DIRECTORY/$patch"
+        IFS=" > " read -ra child <<< ${patches_children[$i]}
+        patch=${child[0]}
+        branch=${child[1]}
+        echo -e "" | cat "$PATCHES_DIRECTORY/headers/$patch" - > "$PATCHES_DIRECTORY/$patch" 2> /dev/null
+        git diff ${branch}..${patch} | sed -e '/^diff/,/^index/ {d}' | sed -e 's/\s\+$//' >> "$PATCHES_DIRECTORY/$patch"
     done
 }
 
@@ -129,24 +131,27 @@ function config_diff(){
     config_diff_children
 
     git checkout master && make clean && git reset --hard origin/master
-    for f in *.def.h; do
-    [ -f "${f:0:${#f}-6}.h" ] && rm -f "${f:0:${#f}-6}.h" || continue
-    done
+    delete_build_files
 
     for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d'/' -f3); do
-    # ignore children branch
-    ignore=0
-    for (( i=0; i<${#patches_children[@]}; i++ )); do
-    IFS=" > " read -ra child <<< ${patches_children[$i]}
-    patch=${child[0]}
-    if [ "$branch" == "$patch" ];then
-    ignore=1
-    fi
-    done
-    if [ "$branch" != "master" ] && [ $ignore == 0 ];then
+        # ignore children branch
+        ignore=0
+        for (( i=0; i<${#patches_children[@]}; i++ )); do
+            IFS=" > " read -ra child <<< ${patches_children[$i]}
+            patch=${child[0]}
+
+            if [ "$branch" == "$patch" ];then
+                ignore=1
+                break
+            fi
+        done
+
+        if [ "$branch" == "master" ] || [ $ignore == 1 ];then
+            continue
+        fi
+
         echo -e "" | cat "$PATCHES_DIRECTORY/headers/$branch" - > "$PATCHES_DIRECTORY/$branch" 2> /dev/null
         git diff master..$branch | sed -e '/^diff/,/^index/ {d}' | sed -e 's/\s\+$//' >> "$PATCHES_DIRECTORY/$branch"
-    fi
     done
     print_message "Diff complete." ${GREEN}
 }
@@ -155,19 +160,20 @@ function config_diff(){
 function config_merge_children(){
     print_inner_message "Merging children..."
     for (( i=0; i<${#patches_children[@]}; i++ )); do
-    IFS=" > " read -ra child <<< ${patches_children[$i]}
-    patch=${child[0]}
-    branch=${child[1]}
+        IFS=" > " read -ra child <<< ${patches_children[$i]}
+        patch=${child[0]}
+        branch=${child[1]}
 
-    # ignore merging
-    if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ] || [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
-        continue
-    fi
+        # ignore merging
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ] || [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
+            print_inner_message "Ignoring: ${PATCHES_DIRECTORY}/${patch} or ${PATCHES_DIRECTORY}/${branch}"
+            continue
+        fi
 
-    print_inner_message "Merging ${patch} into ${branch}"
-    git checkout ${branch} &&
-    git merge ${patch} -m "${patch} into ${branch}" || exit 1 &&
-    git branch --delete ${patch}
+        print_inner_message "Merging ${patch} into ${branch}"
+        git checkout ${branch} &&
+        git merge ${patch} -m "${patch} into ${branch}" || exit 1 &&
+        git branch --delete ${patch}
     done
 }
 
@@ -194,12 +200,10 @@ function config_clean(){
     git checkout master &&
     make clean && git reset --hard origin/master &&
     for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d'/' -f3); do
-    if [ "$branch" != "master" ];then
+        if [ "$branch" == "master" ];then
+            continue
+        fi
         git branch -D $branch
-    fi
-    done
-    for f in *.def.h; do
-    [ -f "${f:0:${#f}-6}.h" ] && rm -f "${f:0:${#f}-6}.h" || continue
     done
 
     print_message "Clean complete." ${GREEN}
