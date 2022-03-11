@@ -1,3 +1,4 @@
+
 --- a/dwm.c
 +++ b/dwm.c
 @@ -431,14 +431,14 @@ buttonpress(XEvent *e)
@@ -27,7 +28,7 @@
  	int boxs = drw->fonts->h / 9;
  	int boxw = drw->fonts->h / 6 + 2;
  	unsigned int i, occ = 0, urg = 0;
-@@ -717,20 +717,10 @@ drawbar(Monitor *m)
+@@ -717,32 +717,36 @@ drawbar(Monitor *m)
  		if (c->isurgent)
  			urg |= c->tags;
  	}
@@ -50,8 +51,15 @@
 
  	if ((w = m->ww - tw - x) > bh) {
  		if (m->sel) {
-@@ -743,6 +733,20 @@ drawbar(Monitor *m)
- 			drw_rect(drw, x, 0, w, bh, 1, 1);
+ 			drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
+ 			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
+ 			if (m->sel->isfloating)
+-				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
++				drw_rect(drw, x + boxs, y + boxs, boxw, boxw, m->sel->isfixed, 0);
+ 		} else {
+ 			drw_setscheme(drw, scheme[SchemeNorm]);
+-			drw_rect(drw, x, 0, w, bh, 1, 1);
++			drw_rect(drw, x, y, w, bh, 1, 1);
  		}
  	}
 +
