@@ -17,17 +17,17 @@ NORMAL=$(tput sgr0)
 
 patches=(
     "config.diff"
-    "nomonocleborder.diff"
-    "fullgaps.diff"
-    "alwayscenter.diff"
-    "cyclelayouts.diff"
-    "movestack.diff"
-    "pertag.diff"
-    "bar-height.diff"
-    "colorbar.diff"
-    "status2d-systray.diff"
-    "focusonclick.diff"
-    "steam.diff"
+    # "nomonocleborder.diff"
+    # "fullgaps.diff"
+    # "alwayscenter.diff"
+    # "cyclelayouts.diff"
+    # "movestack.diff"
+    # "pertag.diff"
+    # "bar-height.diff"
+    # "colorbar.diff"
+    # "status2d-systray.diff"
+    # "focusonclick.diff"
+    # "steam.diff"
     "tagsizecenter.diff"
 )
 
@@ -35,13 +35,13 @@ patches=(
 # Can be useful to resolve conflict between patches
 # eg. patch.diff > base.diff
 patches_children=(
-    # Custom patch for controlling the icon size of the system tray and centers it vertically
-    "systray-iconsize.diff > status2d-systray.diff"
-    # Fixed conflict between status2d-systray and focusonclick
-    "conflict-status2d-systray.diff > status2d-systray.diff"
-    "conflict-focusonclick.diff > focusonclick.diff"
-    # Fixed conflict between tagsizecenter and colorbar
-    # "conflict-tagsizecenter.diff > tagsizecenter.diff"
+    # # Custom patch for controlling the icon size of the system tray and centers it vertically
+    # "systray-iconsize.diff > status2d-systray.diff"
+    # # Fixed conflict between status2d-systray and focusonclick
+    # "conflict-status2d-systray.diff > status2d-systray.diff"
+    # "conflict-focusonclick.diff > focusonclick.diff"
+    # # Fixed conflict between tagsizecenter and colorbar
+    # # "conflict-tagsizecenter.diff > tagsizecenter.diff"
     # "conflict-colorbar.diff > colorbar.diff"
 )
 
