@@ -106,7 +106,7 @@ function config_load(){
         print_inner_message "Loading ${patch}"
         git checkout master &&
         git checkout -b $patch &&
-        git apply $PATCHES_DIRECTORY/$patch &&
+        git apply ${PATCHES_DIRECTORY}/${patch} &&
         git add -A &&
         git commit -m $patch || exit 1
     done
@@ -138,8 +138,7 @@ function config_diff_children(){
             continue
         fi
 
-        echo -e "" | cat "$PATCHES_DIRECTORY/headers/$patch" - > "$PATCHES_DIRECTORY/$patch" 2> /dev/null
-        git diff ${branch}..${patch} | sed -e '/^diff/,/^index/ {d}' | sed -e 's/\s\+$//' >> "$PATCHES_DIRECTORY/$patch"
+        git diff ${branch}..${patch} > "${PATCHES_DIRECTORY}/${patch}"
     done
 }
 
@@ -150,25 +149,8 @@ function config_diff(){
     git checkout master && make clean && git reset --hard origin/master
     delete_build_files
 
-    for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d'/' -f3); do
-        # ignore children branch
-        ignore=0
-        for (( i=0; i<${#patches_children[@]}; i++ )); do
-            IFS=" > " read -ra child <<< ${patches_children[$i]}
-            patch=${child[0]}
-
-            if [ "$branch" == "$patch" ];then
-                ignore=1
-                break
-            fi
-        done
-
-        if [ "$branch" == "master" ] || [ $ignore == 1 ];then
-            continue
-        fi
-
-        echo -e "" | cat "$PATCHES_DIRECTORY/headers/$branch" - > "$PATCHES_DIRECTORY/$branch" 2> /dev/null
-        git diff master..$branch | sed -e '/^diff/,/^index/ {d}' | sed -e 's/\s\+$//' >> "$PATCHES_DIRECTORY/$branch"
+    for patch in ${patches[@]}; do
+        git diff master..$branch > "${PATCHES_DIRECTORY}/${branch}"
     done
     print_message "Diff complete." ${GREEN}
 }
@@ -212,24 +194,6 @@ function config_merge(){
 
     git checkout -b custom
     git merge -m "Merged" ${patches[@]} || exit 1
-    # for patch in ${patches[@]}; do
-    #     # file don't exist
-    #     if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
-    #         print_inner_message "File don't exist: ${patch}"
-    #         continue
-    #     fi
-
-    #     print_inner_message "Merging ${patch}..."
-    #     git merge $branch -m $branch || exit 1
-    # done
-    # for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d '/' -f3); do
-    #     if [ "$branch" == "master" ] || [ "$branch" == "custom" ];then
-    #         continue
-    #     fi
-
-    #     print_inner_message "Merging $branch"
-    #     git merge $branch -m $branch || exit 1
-    # done
 
     print_message "Merge complete." ${GREEN}
 }
