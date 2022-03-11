@@ -1,8 +1,9 @@
-
+diff --git a/config.def.h b/config.def.h
+index a2ac963..6480f58 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -2,37 +2,92 @@
-
+ 
  /* appearance */
  static const unsigned int borderpx  = 1;        /* border pixel of windows */
 -static const unsigned int snap      = 32;       /* snap pixel */
@@ -63,11 +64,11 @@
 +    /* [SchemeInfoSel]   = { col_fg,       col_bar_bg,   col_bar_bg   }, // infobar middle  selected {text,background,not used but cannot be empty} */
 +    /* [SchemeInfoNorm]  = { col_fg,       col_bar_bg,   col_bar_bg   }, // infobar middle  unselected {text,background,not used but cannot be empty} */
  };
-
+ 
  /* tagging */
 -static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 +static const char *tags[] = { "1", "2", "3", "4" };
-
+ 
  static const Rule rules[] = {
  	/* xprop(1):
  	 *	WM_CLASS(STRING) = instance, class
@@ -104,14 +105,14 @@
 +	{"element",         NULL,       NULL,       1 << 2,       0,           -1},
 +	{"discord",         NULL,       NULL,       1 << 2,       0,           -1},
  };
-
+ 
  /* layout(s) */
 -static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 +static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
  static const int nmaster     = 1;    /* number of clients in master area */
  static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
  static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
-@@ -40,12 +95,13 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
+@@ -40,8 +95,9 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
  static const Layout layouts[] = {
  	/* symbol     arrange function */
  	{ "[]=",      tile },    /* first entry is default */
@@ -120,17 +121,12 @@
  	{ "[M]",      monocle },
 +	{ NULL,       NULL },
  };
-
+ 
  /* key definitions */
--#define MODKEY Mod1Mask
-+#define MODKEY Mod4Mask
- #define TAGKEYS(KEY,TAG) \
- 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
- 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
 @@ -55,46 +111,53 @@ static const Layout layouts[] = {
  /* helper for spawning shell commands in the pre dwm-5.0 fashion */
  #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
-
+ 
 -/* commands */
 -static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 -static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
@@ -209,7 +205,7 @@
 +
 +	{ MODKEY|ControlMask,           XK_q,      quit,           {0} },
  };
-
+ 
  /* button definitions */
 @@ -104,7 +167,7 @@ static Button buttons[] = {
  	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
@@ -220,6 +216,8 @@
  	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
  	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
  	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
+diff --git a/dwm.c b/dwm.c
+index a96f33c..34948ce 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -1643,8 +1643,6 @@ sigchld(int unused)
