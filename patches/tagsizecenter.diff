@@ -1,5 +1,5 @@
 diff --git a/dwm.c b/dwm.c
-index a96f33c..2a8c8ea 100644
+index a96f33c..7cb6fe2 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -431,14 +431,15 @@ buttonpress(XEvent *e)
@@ -70,7 +70,7 @@ index a96f33c..2a8c8ea 100644
 +	for (i = 0; i < LENGTH(tags); i++) {
 +		w = tag_w;
 +		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
-+		drw_rect(drw, x, y, tag_w, tag_h, m == selmon && selmon->sel && selmon->sel->tags & 1 << i, urg & 1 << i);
++		drw_text(drw, x, y, tag_w, tag_h, 0, "", urg & 1 << i);
 +		if (occ & 1 << i)
 +			drw_rect(drw, x + boxs, y + boxs, boxw, boxw,
 +				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
