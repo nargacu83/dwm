@@ -1,6 +1,15 @@
 
 --- a/dwm.c
 +++ b/dwm.c
+@@ -696,7 +696,7 @@ dirtomon(int dir)
+ void
+ drawbar(Monitor *m)
+ {
+-	int x, w, tw = 0;
++	int x, y, w, tw = 0;
+ 	int boxs = drw->fonts->h / 9;
+ 	int boxw = drw->fonts->h / 6 + 2;
+ 	unsigned int i, occ = 0, urg = 0;
 @@ -717,20 +717,10 @@ drawbar(Monitor *m)
  		if (c->isurgent)
  			urg |= c->tags;
@@ -24,7 +33,7 @@
 
  	if ((w = m->ww - tw - x) > bh) {
  		if (m->sel) {
-@@ -743,6 +733,21 @@ drawbar(Monitor *m)
+@@ -743,6 +733,22 @@ drawbar(Monitor *m)
  			drw_rect(drw, x, 0, w, bh, 1, 1);
  		}
  	}
@@ -32,10 +41,11 @@
 +	int tag_w = 30;
 +	int tag_h = 35;
 +	x = m->ww / 2 - (LENGTH(tags) / 2 * tag_w);
++	y = tag_h > bh ? bh : bh - tag_h;
 +	for (i = 0; i < LENGTH(tags); i++) {
 +		w = tag_w;
 +		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
-+		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
++		drw_text(drw, x, y, w, tag_h, lrpad / 2, "", urg & 1 << i);
 +		if (occ & 1 << i)
 +			drw_rect(drw, x + boxs, boxs, boxw, boxw,
 +				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
