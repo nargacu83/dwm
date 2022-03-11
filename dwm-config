@@ -263,15 +263,14 @@ function config_install(){
 [[ ! -d "$DWM_DIRECTORY" ]] && { echo 1>&2 "You are not in a valid directory"; exit 1; }
 [[ ! -d "$PATCHES_DIRECTORY" ]] && { echo 1>&2 "You are not in a valid directory"; exit 1; }
 
-cd $DWM_DIRECTORY
+cd ${DWM_DIRECTORY}
 
 while [ "${1:-}" != "" ]; do
   case "$1" in
-    -c|--clean)
-      config_clean
-      ;;
-    --clean-abort)
+    -a|--abort)
       git merge --abort
+      ;;
+    -c|--clean)
       config_clean
       ;;
     -d|--diff)
