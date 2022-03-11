@@ -150,7 +150,7 @@ function config_diff(){
     delete_build_files
 
     for patch in ${patches[@]}; do
-        git diff master..$branch > "${PATCHES_DIRECTORY}/${branch}"
+        git diff master..${patch} > "${PATCHES_DIRECTORY}/${patch}"
     done
     print_message "Diff complete." ${GREEN}
 }
