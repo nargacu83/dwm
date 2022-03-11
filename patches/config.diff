@@ -1,5 +1,5 @@
 diff --git a/config.def.h b/config.def.h
-index a2ac963..f428cbb 100644
+index a2ac963..4d84ff2 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -2,37 +2,92 @@
@@ -27,7 +27,7 @@ index a2ac963..f428cbb 100644
 +static const int user_bh            = 35;       /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
 +
 +static const int tag_w              = 30;       /* tag width */
-+static const int tag_h              = 6;        /* tag height */
++static const int tag_h              = 8;        /* tag height */
 +
 +static const int splitstatus        = 1;        /* 1 for split status items */
 +static const char *splitdelim       = ";";      /* Character used for separating status */
