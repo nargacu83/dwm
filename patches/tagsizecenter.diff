@@ -71,7 +71,7 @@
 +		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
 +		drw_rect(drw, x, y, tag_w, tag_h, m == selmon && selmon->sel && selmon->sel->tags & 1 << i, urg & 1 << i);
 +		if (occ & 1 << i)
-+			drw_rect(drw, x + boxs, boxs, boxw, boxw,
++			drw_rect(drw, x + boxs, y + boxs, boxw, boxw,
 +				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
 +				urg & 1 << i);
 +		x += w;
