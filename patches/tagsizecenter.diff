@@ -1,12 +1,13 @@
 
 --- a/dwm.c
 +++ b/dwm.c
-@@ -431,14 +431,14 @@ buttonpress(XEvent *e)
+@@ -431,14 +431,15 @@ buttonpress(XEvent *e)
  		focus(NULL);
  	}
  	if (ev->window == selmon->barwin) {
 -		i = x = 0;
-+		i = x = m->ww / 2 - (LENGTH(tags) / 2 * tag_w);
++		i = 0;
++		x = m->ww / 2 - (LENGTH(tags) / 2 * tag_w);
  		do
 -			x += TEXTW(tags[i]);
 +			x += tag_w;
@@ -19,7 +20,7 @@
  			click = ClkLtSymbol;
  		else if (ev->x > selmon->ww - (int)TEXTW(stext))
  			click = ClkStatusText;
-@@ -696,7 +696,7 @@ dirtomon(int dir)
+@@ -696,7 +697,7 @@ dirtomon(int dir)
  void
  drawbar(Monitor *m)
  {
@@ -28,7 +29,7 @@
  	int boxs = drw->fonts->h / 9;
  	int boxw = drw->fonts->h / 6 + 2;
  	unsigned int i, occ = 0, urg = 0;
-@@ -717,32 +717,36 @@ drawbar(Monitor *m)
+@@ -717,32 +718,36 @@ drawbar(Monitor *m)
  		if (c->isurgent)
  			urg |= c->tags;
  	}
