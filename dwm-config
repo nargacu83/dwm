@@ -182,9 +182,10 @@ function config_merge_children(){
         fi
 
         print_inner_message "Merging ${patch} into ${branch}"
+
         git checkout ${branch} &&
-        git merge ${patch} -m "${patch} into ${branch}" || exit 1 &&
-        git branch --delete ${patch}
+            git merge ${patch} -m "${patch} into ${branch}" &&
+            git branch --delete ${patch} || exit 1
     done
 }
 
@@ -193,7 +194,18 @@ function config_merge(){
     config_merge_children
 
     git checkout -b custom
-    git merge -m "Merged" ${patches[@]} || exit 1
+    for patch in ${patches[@]}; do
+
+        # file don't exist
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
+            print_inner_message "File don't exist: ${patch}"
+            continue
+        fi
+
+        print_inner_message "Merging ${patch}..."
+        git merge -m "Merge of ${patch}" ${patch} || exit 1
+    done
+    # git merge -m "Merged" ${patches[@]} || exit 1
 
     print_message "Merge complete." ${GREEN}
 }
