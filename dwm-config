@@ -142,12 +142,18 @@ function config_diff_children(){
             continue
         fi
 
-        git diff ${branch}..${patch} > "${PATCHES_DIRECTORY}/${patch}"
+        git diff ${branch}..${patch} > "${PATCHES_DIRECTORY}/${patch}" || exit 1
     done
 }
 
 function config_diff(){
     print_message "Diff..." ${BLUE}
+
+    if ! git diff --quiet; then
+        print_message "Uncommited changes detected, aborting diff." ${RED}
+        exit 1
+    fi
+
     config_diff_children
 
     git checkout master && make clean && git reset --hard origin/master
