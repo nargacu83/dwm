@@ -264,6 +264,20 @@ function config_install(){
     print_message "Install complete." ${GREEN}
 }
 
+function config_install_theirs(){
+    print_message "Installing..." ${BLUE}
+
+    config_clean
+    config_load
+    config_merge_theirs
+
+    make && sudo make clean install || exit 1
+
+    config_clean
+
+    print_message "Install complete." ${GREEN}
+}
+
 # Check the directory validity
 [[ ! -d "$DWM_DIRECTORY" ]] && { echo 1>&2 "You are not in a valid directory"; exit 1; }
 [[ ! -d "$PATCHES_DIRECTORY" ]] && { echo 1>&2 "You are not in a valid directory"; exit 1; }
@@ -295,6 +309,9 @@ while [ "${1:-}" != "" ]; do
       ;;
     -i|--install)
       config_install
+      ;;
+    --install-theirs)
+      config_install_theirs
       ;;
     -*|--*)
       echo "Unknown option $1"
