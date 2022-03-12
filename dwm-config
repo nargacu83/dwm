@@ -215,7 +215,26 @@ function config_merge(){
         print_inner_message "Merging ${patch}..."
         git merge -m "Merge of ${patch}" ${patch} || exit 1
     done
-    # git merge -m "Merged" ${patches[@]} || exit 1
+
+    print_message "Merge complete." ${GREEN}
+}
+
+function config_merge_theirs(){
+    print_message "Merging theirs..." ${BLUE}
+    config_merge_children
+
+    git checkout -b custom
+    for patch in ${patches[@]}; do
+
+        # file don't exist
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
+            print_inner_message "File don't exist: ${patch}"
+            continue
+        fi
+
+        print_inner_message "Merging ${patch}..."
+        git merge --strategy-option theirs -m "Merge of ${patch}" ${patch} || exit 1
+    done
 
     print_message "Merge complete." ${GREEN}
 }
@@ -267,6 +286,9 @@ while [ "${1:-}" != "" ]; do
       ;;
     -m|--merge)
       config_merge
+      ;;
+    -m|--merge-theirs)
+      config_merge_theirs
       ;;
     -b|--build)
       config_build
