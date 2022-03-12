@@ -1,10 +1,11 @@
-
+diff --git a/dwm.c b/dwm.c
+index a96f33c..121ba5c 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -318,6 +318,9 @@ applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact)
  	int baseismin;
  	Monitor *m = c->mon;
-
+ 
 +	if (&monocle == c->mon->lt[c->mon->sellt]->arrange)
 +		return 1;
 +

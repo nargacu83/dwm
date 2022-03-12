@@ -1,4 +1,5 @@
-
+diff --git a/dwm.1 b/dwm.1
+index ddc8321..829047b 100644
 --- a/dwm.1
 +++ b/dwm.1
 @@ -92,6 +92,12 @@ Sets monocle layout.
@@ -14,6 +15,8 @@
  .B Mod1\-j
  Focus next window.
  .TP
+diff --git a/dwm.c b/dwm.c
+index a96f33c..2d98c2b 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -157,6 +157,7 @@ static void configure(Client *c);
@@ -27,7 +30,7 @@
 @@ -645,6 +646,23 @@ createmon(void)
  	return m;
  }
-
+ 
 +void
 +cyclelayout(const Arg *arg) {
 +	Layout *l;

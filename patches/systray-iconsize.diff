@@ -1,4 +1,5 @@
-
+diff --git a/dwm.c b/dwm.c
+index 8153bfe..0fecc58 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -2326,23 +2326,18 @@ updatestatus(void)
@@ -35,7 +36,7 @@
 +		i->w = systrayiconsize;
  	}
  }
-
+ 
 @@ -2421,7 +2416,12 @@ updatesystray(void)
  		XMapRaised(dpy, i->win);
  		w += systrayspacing;
