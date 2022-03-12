@@ -1,5 +1,5 @@
 diff --git a/dwm.c b/dwm.c
-index 8153bfe..9872198 100644
+index 8153bfe..ed57ed0 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -185,7 +185,6 @@ static Monitor *dirtomon(int dir);
@@ -10,3 +10,12 @@ index 8153bfe..9872198 100644
  static void expose(XEvent *e);
  static void focus(Client *c);
  static void focusin(XEvent *e);
+@@ -899,7 +898,7 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
+ void
+ drawbar(Monitor *m)
+ {
+-	int x, w, tw = 0, stw = 0;
++	int x, y, w, tw = 0, stw = 0;
+ 	int boxs = drw->fonts->h / 9;
+ 	int boxw = drw->fonts->h / 6 + 2;
+ 	unsigned int i, occ = 0, urg = 0;
