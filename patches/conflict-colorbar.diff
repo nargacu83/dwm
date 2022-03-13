@@ -1,5 +1,5 @@
 diff --git a/dwm.c b/dwm.c
-index 316a6b1..a199e4f 100644
+index 316a6b12..a199e4f3 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -717,22 +717,12 @@ drawbar(Monitor *m)

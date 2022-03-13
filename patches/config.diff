@@ -1,5 +1,5 @@
 diff --git a/config.def.h b/config.def.h
-index a2ac963..f428cbb 100644
+index a2ac963a..f428cbb6 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -2,37 +2,92 @@
@@ -217,7 +217,7 @@ index a2ac963..f428cbb 100644
  	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
  	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 diff --git a/dwm.c b/dwm.c
-index a96f33c..34948ce 100644
+index a96f33c1..34948ce7 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -1643,8 +1643,6 @@ sigchld(int unused)

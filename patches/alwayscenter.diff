@@ -1,5 +1,5 @@
 diff --git a/dwm.c b/dwm.c
-index a96f33c..c242b2c 100644
+index a96f33c1..c242b2c0 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -1060,6 +1060,8 @@ manage(Window w, XWindowAttributes *wa)

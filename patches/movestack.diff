@@ -1,5 +1,5 @@
 diff --git a/dwm.c b/dwm.c
-index a96f33c..502d782 100644
+index a96f33c1..502d7829 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -184,6 +184,7 @@ static void maprequest(XEvent *e);

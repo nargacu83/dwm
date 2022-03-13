@@ -1,5 +1,5 @@
 diff --git a/dwm.c b/dwm.c
-index 8153bfe..bf26b02 100644
+index 8153bfea..bf26b022 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -185,7 +185,6 @@ static Monitor *dirtomon(int dir);
