@@ -1,5 +1,5 @@
 diff --git a/dwm.c b/dwm.c
-index a96f33c1..36269805 100644
+index a96f33c1..de68360f 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -431,14 +431,15 @@ buttonpress(XEvent *e)
@@ -17,7 +17,7 @@ index a96f33c1..36269805 100644
  			click = ClkTagBar;
  			arg.ui = 1 << i;
 -		} else if (ev->x < x + blw)
-+		} else if (ev->x < blw)
++		} else if (ev->x < 0 + blw)
  			click = ClkLtSymbol;
  		else if (ev->x > selmon->ww - (int)TEXTW(stext))
  			click = ClkStatusText;
