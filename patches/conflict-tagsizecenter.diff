@@ -1,5 +1,5 @@
 diff --git a/dwm.c b/dwm.c
-index de68360f..f5592b7c 100644
+index 3abda040..6e289960 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -697,7 +697,7 @@ dirtomon(int dir)

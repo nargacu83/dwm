@@ -1,5 +1,5 @@
 diff --git a/dwm.c b/dwm.c
-index a96f33c1..de68360f 100644
+index a96f33c1..3abda040 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -431,14 +431,15 @@ buttonpress(XEvent *e)
@@ -13,7 +13,8 @@ index a96f33c1..de68360f 100644
 -			x += TEXTW(tags[i]);
 +			x += tag_w;
  		while (ev->x >= x && ++i < LENGTH(tags));
- 		if (i < LENGTH(tags)) {
+-		if (i < LENGTH(tags)) {
++		if (i < LENGTH(tags) && ev->x >= (m->ww / 2 - (LENGTH(tags) / 2 * tag_w))) {
  			click = ClkTagBar;
  			arg.ui = 1 << i;
 -		} else if (ev->x < x + blw)
