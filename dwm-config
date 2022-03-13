@@ -278,6 +278,19 @@ function config_install_theirs(){
     print_message "Install complete." ${GREEN}
 }
 
+# Launching in Xephyr
+function config_launch(){
+    print_message "Launching..." ${BLUE}
+
+    config_clean
+    config_load
+    config_merge_theirs
+
+    make || exit 1
+
+    ./dwm
+}
+
 # Check the directory validity
 [[ ! -d "$DWM_DIRECTORY" ]] && { echo 1>&2 "You are not in a valid directory"; exit 1; }
 [[ ! -d "$PATCHES_DIRECTORY" ]] && { echo 1>&2 "You are not in a valid directory"; exit 1; }
@@ -312,6 +325,9 @@ while [ "${1:-}" != "" ]; do
       ;;
     --install-theirs)
       config_install_theirs
+      ;;
+    -l|--launch)
+      config_launch
       ;;
     -*|--*)
       echo "Unknown option $1"
