@@ -16,3 +16,15 @@ En cas de conflit:
 - Supprimer les lignes des patchs en conflits
 - Créer une nouvelle branche pour la résolution des conflits
 - Coller le code copié qui entrait en conflit
+
+## Tester en utilisant Xephyr
+
+1. Xephyr -ac -screen 1280x720 -br -reset -terminate 2> /dev/null :1 &
+2. DISPLAY=:1 alacritty &
+3. Executer DWM
+4. Debugger
+   gdb ./dwm
+   r
+   # crash!
+   bt
+   ...

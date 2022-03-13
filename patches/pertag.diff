@@ -1,10 +1,11 @@
-
+diff --git a/dwm.c b/dwm.c
+index a96f33c1..5114f5ec 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -111,6 +111,7 @@ typedef struct {
  	void (*arrange)(Monitor *);
  } Layout;
-
+ 
 +typedef struct Pertag Pertag;
  struct Monitor {
  	char ltsymbol[16];
@@ -15,12 +16,12 @@
  	const Layout *lt[2];
 +	Pertag *pertag;
  };
-
+ 
  typedef struct {
 @@ -272,6 +274,15 @@ static Window root, wmcheckwin;
  /* configuration, allows nested code to access above variables */
  #include "config.h"
-
+ 
 +struct Pertag {
 +	unsigned int curtag, prevtag; /* current and previous tag */
 +	int nmasters[LENGTH(tags) + 1]; /* number of windows in master area */
@@ -32,13 +33,13 @@
 +
  /* compile-time check if all tags fit into an unsigned int bit array. */
  struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
-
+ 
 @@ -632,6 +643,7 @@ Monitor *
  createmon(void)
  {
  	Monitor *m;
 +	unsigned int i;
-
+ 
  	m = ecalloc(1, sizeof(Monitor));
  	m->tagset[0] = m->tagset[1] = 1;
 @@ -642,6 +654,20 @@ createmon(void)
@@ -61,7 +62,7 @@
 +
  	return m;
  }
-
+ 
 @@ -970,7 +996,7 @@ grabkeys(void)
  void
  incnmaster(const Arg *arg)
@@ -70,7 +71,7 @@
 +	selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag] = MAX(selmon->nmaster + arg->i, 0);
  	arrange(selmon);
  }
-
+ 
 @@ -1505,9 +1531,9 @@ void
  setlayout(const Arg *arg)
  {
@@ -91,7 +92,7 @@
 +	selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag] = f;
  	arrange(selmon);
  }
-
+ 
 @@ -1705,7 +1731,7 @@ tile(Monitor *m)
  void
  togglebar(const Arg *arg)
@@ -106,7 +107,7 @@
  {
  	unsigned int newtagset = selmon->tagset[selmon->seltags] ^ (arg->ui & TAGMASK);
 +	int i;
-
+ 
  	if (newtagset) {
  		selmon->tagset[selmon->seltags] = newtagset;
 +

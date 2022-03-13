@@ -1,4 +1,5 @@
-
+diff --git a/dwm.c b/dwm.c
+index a96f33c1..25765b9f 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -93,6 +93,7 @@ struct Client {
@@ -12,7 +13,7 @@
 @@ -292,6 +293,9 @@ applyrules(Client *c)
  	class    = ch.res_class ? ch.res_class : broken;
  	instance = ch.res_name  ? ch.res_name  : broken;
-
+ 
 +	if (strstr(class, "Steam") || strstr(class, "steam_app_"))
 +		c->issteam = 1;
 +

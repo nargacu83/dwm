@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-###
-### Install script for my DWM
-###
-
 SCRIPT_DIR="$(pwd)"
 PATCHES_DIRECTORY="$(pwd)/patches"
 DWM_DIRECTORY="$(pwd)/dwm"
@@ -32,16 +28,25 @@ patches=(
     "status2d-systray.diff"
     "focusonclick.diff"
     "steam.diff"
+    "tagsizecenter.diff"
 )
 
 # Indicate a patch done on top of another patch
+# Can be useful to resolve conflict between patches
 # eg. patch.diff > base.diff
 patches_children=(
+    # Features patches
     # Custom patch for controlling the icon size of the system tray and centers it vertically
     "systray-iconsize.diff > status2d-systray.diff"
+
+    # Conflicts patches
     # Fixed conflict between status2d-systray and focusonclick
-    "conflict-status2d-systray.diff > status2d-systray.diff"
     "conflict-focusonclick.diff > focusonclick.diff"
+    "conflict-status2d-systray.diff > status2d-systray.diff"
+
+    # Fixed conflict between tagsizecenter and colorbar
+    "conflict-tagsizecenter.diff > tagsizecenter.diff"
+    "conflict-colorbar.diff > colorbar.diff"
 )
 
 function print_message() {
@@ -50,6 +55,12 @@ function print_message() {
 
 function print_inner_message() {
     echo -e "${BOLD}${BLUE} ->${NC} ${BOLD}${1}${NORMAL}"
+}
+
+function delete_build_files() {
+    for f in *.def.h; do
+        [ -f "${f:0:${#f}-6}.h" ] && rm -f "${f:0:${#f}-6}.h" || continue
+    done
 }
 
 function config_build(){
@@ -61,21 +72,26 @@ function config_build(){
 function config_load_children(){
     print_inner_message "Loading children..."
     for (( i=0; i<${#patches_children[@]}; i++ )); do
-    IFS=" > " read -ra child <<< ${patches_children[$i]}
-    patch=${child[0]}
-    branch=${child[1]}
+        IFS=" > " read -ra child <<< ${patches_children[$i]}
+        patch=${child[0]}
+        branch=${child[1]}
 
-    # ignore loading
-    if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ] || [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
-        continue
-    fi
+        # file don't exist
+        if [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
+            print_inner_message "File don't exist: ${branch}"
+            continue
+        fi
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
+            print_inner_message "File don't exist: ${patch}"
+            continue
+        fi
 
-    print_inner_message "Loading ${patch}"
-    git checkout ${branch} &&
-    git checkout -b ${patch} &&
-    git apply ${PATCHES_DIRECTORY}/${patch} &&
-    git add -A &&
-    git commit -m ${patch}
+        print_inner_message "Loading ${patch} -> ${branch}"
+        git checkout ${branch} &&
+        git checkout -b ${patch} &&
+        git apply ${PATCHES_DIRECTORY}/${patch} &&
+        git add -A &&
+        git commit -m ${patch}
     done
 }
 
@@ -85,17 +101,18 @@ function config_load(){
     # Create a git branch per patch and apply them
     for patch in ${patches[@]}; do
 
-    # ignore loading
-    if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
-        continue
-    fi
+        # file don't exist
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
+            print_inner_message "File don't exist: ${patch}"
+            continue
+        fi
 
-    print_inner_message "Loading ${patch}"
-    git checkout master &&
-    git checkout -b $patch &&
-    git apply $PATCHES_DIRECTORY/$patch &&
-    git add -A &&
-    git commit -m $patch || exit 1
+        print_inner_message "Loading ${patch}"
+        git checkout master &&
+        git checkout -b $patch &&
+        git apply ${PATCHES_DIRECTORY}/${patch} &&
+        git add -A &&
+        git commit -m $patch || exit 1
     done
 
     config_load_children
@@ -110,42 +127,40 @@ function config_diff_children(){
     print_message "Diff children..." ${BLUE}
 
     git checkout master && make clean && git reset --hard origin/master
-    for f in *.def.h; do
-    [ -f "${f:0:${#f}-6}.h" ] && rm -f "${f:0:${#f}-6}.h" || continue
-    done
+    delete_build_files
 
     for (( i=0; i<${#patches_children[@]}; i++ )); do
-    IFS=" > " read -ra child <<< ${patches_children[$i]}
-    patch=${child[0]}
-    branch=${child[1]}
-    echo -e "" | cat "$PATCHES_DIRECTORY/headers/$patch" - > "$PATCHES_DIRECTORY/$patch" 2> /dev/null
-    git diff ${branch}..${patch} | sed -e '/^diff/,/^index/ {d}' | sed -e 's/\s\+$//' >> "$PATCHES_DIRECTORY/$patch"
+        IFS=" > " read -ra child <<< ${patches_children[$i]}
+        patch=${child[0]}
+        branch=${child[1]}
+
+        # branch don't exists in the repo
+        if ! git rev-parse --quiet --verify $branch > /dev/null; then
+            continue
+        fi
+        if ! git rev-parse --quiet --verify $patch > /dev/null; then
+            continue
+        fi
+
+        git diff ${branch}..${patch} > "${PATCHES_DIRECTORY}/${patch}" || exit 1
     done
 }
 
 function config_diff(){
     print_message "Diff..." ${BLUE}
+
+    if ! git diff --quiet; then
+        print_message "Uncommited changes detected, aborting diff." ${RED}
+        exit 1
+    fi
+
     config_diff_children
 
     git checkout master && make clean && git reset --hard origin/master
-    for f in *.def.h; do
-    [ -f "${f:0:${#f}-6}.h" ] && rm -f "${f:0:${#f}-6}.h" || continue
-    done
+    delete_build_files
 
-    for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d'/' -f3); do
-    # ignore children branch
-    ignore=0
-    for (( i=0; i<${#patches_children[@]}; i++ )); do
-    IFS=" > " read -ra child <<< ${patches_children[$i]}
-    patch=${child[0]}
-    if [ "$branch" == "$patch" ];then
-    ignore=1
-    fi
-    done
-    if [ "$branch" != "master" ] && [ $ignore == 0 ];then
-        echo -e "" | cat "$PATCHES_DIRECTORY/headers/$branch" - > "$PATCHES_DIRECTORY/$branch" 2> /dev/null
-        git diff master..$branch | sed -e '/^diff/,/^index/ {d}' | sed -e 's/\s\+$//' >> "$PATCHES_DIRECTORY/$branch"
-    fi
+    for patch in ${patches[@]}; do
+        git diff master..${patch} > "${PATCHES_DIRECTORY}/${patch}"
     done
     print_message "Diff complete." ${GREEN}
 }
@@ -154,19 +169,33 @@ function config_diff(){
 function config_merge_children(){
     print_inner_message "Merging children..."
     for (( i=0; i<${#patches_children[@]}; i++ )); do
-    IFS=" > " read -ra child <<< ${patches_children[$i]}
-    patch=${child[0]}
-    branch=${child[1]}
+        IFS=" > " read -ra child <<< ${patches_children[$i]}
+        patch=${child[0]}
+        branch=${child[1]}
 
-    # ignore merging
-    if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ] || [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
-        continue
-    fi
+        # file don't exist
+        if [ ! -f "${PATCHES_DIRECTORY}/${branch}" ]; then
+            print_inner_message "File don't exist: ${branch}"
+            continue
+        fi
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
+            print_inner_message "File don't exist: ${patch}"
+            continue
+        fi
 
-    print_inner_message "Merging ${patch} into ${branch}"
-    git checkout ${branch} &&
-    git merge ${patch} -m "${patch} into ${branch}" || exit 1 &&
-    git branch --delete ${patch}
+        # branch don't exists in the repo
+        if ! git rev-parse --quiet --verify $branch > /dev/null; then
+            continue
+        fi
+        if ! git rev-parse --quiet --verify $patch > /dev/null; then
+            continue
+        fi
+
+        print_inner_message "Merging ${patch} -> ${branch}"
+
+        git checkout ${branch} &&
+            git merge ${patch} -m "${patch} into ${branch}" &&
+            git branch --delete ${patch} || exit 1
     done
 }
 
@@ -175,13 +204,36 @@ function config_merge(){
     config_merge_children
 
     git checkout -b custom
-    for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d '/' -f3); do
-        if [ "$branch" == "master" ] || [ "$branch" == "custom" ];then
+    for patch in ${patches[@]}; do
+
+        # file don't exist
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
+            print_inner_message "File don't exist: ${patch}"
             continue
         fi
 
-        print_inner_message "Merging $branch"
-        git merge $branch -m $branch || exit 1
+        print_inner_message "Merging ${patch}..."
+        git merge -m "Merge of ${patch}" ${patch} || exit 1
+    done
+
+    print_message "Merge complete." ${GREEN}
+}
+
+function config_merge_theirs(){
+    print_message "Merging theirs..." ${BLUE}
+    config_merge_children
+
+    git checkout -b custom
+    for patch in ${patches[@]}; do
+
+        # file don't exist
+        if [ ! -f "${PATCHES_DIRECTORY}/${patch}" ]; then
+            print_inner_message "File don't exist: ${patch}"
+            continue
+        fi
+
+        print_inner_message "Merging ${patch}..."
+        git merge --strategy-option theirs -m "Merge of ${patch}" ${patch} || exit 1
     done
 
     print_message "Merge complete." ${GREEN}
@@ -191,15 +243,9 @@ function config_clean(){
     print_message "Cleaning..." ${BLUE}
 
     git checkout master &&
-    make clean && git reset --hard origin/master &&
-    for branch in $(git for-each-ref --format='%(refname)' refs/heads/ | cut -d'/' -f3); do
-    if [ "$branch" != "master" ];then
-        git branch -D $branch
-    fi
-    done
-    for f in *.def.h; do
-    [ -f "${f:0:${#f}-6}.h" ] && rm -f "${f:0:${#f}-6}.h" || continue
-    done
+        make clean &&
+        git reset --hard origin/master &&
+        git branch -D $(git branch | grep -v -e "master$")
 
     print_message "Clean complete." ${GREEN}
 }
@@ -218,14 +264,44 @@ function config_install(){
     print_message "Install complete." ${GREEN}
 }
 
+function config_install_theirs(){
+    print_message "Installing..." ${BLUE}
+
+    config_clean
+    config_load
+    config_merge_theirs
+
+    make && sudo make clean install || exit 1
+
+    config_clean
+
+    print_message "Install complete." ${GREEN}
+}
+
+# Launching in Xephyr
+function config_launch(){
+    print_message "Launching..." ${BLUE}
+
+    config_clean
+    config_load
+    config_merge_theirs
+
+    make || exit 1
+
+    ./dwm
+}
+
 # Check the directory validity
 [[ ! -d "$DWM_DIRECTORY" ]] && { echo 1>&2 "You are not in a valid directory"; exit 1; }
 [[ ! -d "$PATCHES_DIRECTORY" ]] && { echo 1>&2 "You are not in a valid directory"; exit 1; }
 
-cd $DWM_DIRECTORY
+cd ${DWM_DIRECTORY}
 
 while [ "${1:-}" != "" ]; do
   case "$1" in
+    -a|--abort)
+      git merge --abort
+      ;;
     -c|--clean)
       config_clean
       ;;
@@ -238,11 +314,20 @@ while [ "${1:-}" != "" ]; do
     -m|--merge)
       config_merge
       ;;
+    -m|--merge-theirs)
+      config_merge_theirs
+      ;;
     -b|--build)
       config_build
       ;;
     -i|--install)
       config_install
+      ;;
+    --install-theirs)
+      config_install_theirs
+      ;;
+    -l|--launch)
+      config_launch
       ;;
     -*|--*)
       echo "Unknown option $1"
