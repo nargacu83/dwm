@@ -1,8 +1,8 @@
 diff --git a/dwm.c b/dwm.c
-index 8153bfea..48fd2baf 100644
+index 8153bfea..65cc8a21 100644
 --- a/dwm.c
 +++ b/dwm.c
-@@ -794,13 +794,121 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
+@@ -794,13 +794,122 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
  	char *text;
  	char *p;
  
@@ -19,6 +19,7 @@ index 8153bfea..48fd2baf 100644
 +	p = strstr(text, splitdelim);
 +	if (p) {
 +		int index = p - text + 1;
++		// TODO: Improve this part, the compiler complains about it, idk i don't code in C
 +		strncpy(text, text + index, strlen(p));
 +	}
 +	p = text;
@@ -126,7 +127,7 @@ index 8153bfea..48fd2baf 100644
  	w = 0;
  	i = -1;
  	while (text[++i]) {
-@@ -826,7 +934,6 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
+@@ -826,7 +935,6 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
  	text = p;
  
  	w += 2; /* 1px padding on both sides */
@@ -134,7 +135,7 @@ index 8153bfea..48fd2baf 100644
  	x = m->ww - w - getsystraywidth();
  
  	drw_setscheme(drw, scheme[LENGTH(colors)]);
-@@ -891,6 +998,7 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
+@@ -891,6 +999,7 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
  	}
  
  	drw_setscheme(drw, scheme[SchemeNorm]);
