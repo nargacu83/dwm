@@ -38,6 +38,8 @@ patches_children=(
     # Features patches
     # Custom patch for controlling the icon size of the system tray and centers it vertically
     "systray-iconsize.diff > status2d-systray.diff"
+    # Custom patch based on some splitstatus patch changes
+    "splitstatusbar.diff > tagsizecenter.diff"
 
     # Conflicts patches
     # Fixed conflict between status2d-systray and focusonclick
