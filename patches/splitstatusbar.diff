@@ -1,0 +1,145 @@
+diff --git a/dwm.c b/dwm.c
+index 8153bfea..65cc8a21 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -794,13 +794,122 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
+ 	char *text;
+ 	char *p;
+ 
+-	len = strlen(stext) + 1 ;
++	char *mstext;
++	char *msp;
++
++	len = strlen(stext) + 1;
+ 	if (!(text = (char*) malloc(sizeof(char)*len)))
+ 		die("malloc");
+-	p = text;
+ 	memcpy(text, stext, len);
+ 
++	p = strstr(text, splitdelim);
++	if (p) {
++		int index = p - text + 1;
++		// TODO: Improve this part, the compiler complains about it, idk i don't code in C
++		strncpy(text, text + index, strlen(p));
++	}
++	p = text;
++
++	len = strlen(stext) + 1;
++	if (!(mstext = (char*) malloc(sizeof(char)*len)))
++		die("malloc");
++	msp = mstext;
++	memcpy(mstext, stext, len);
++	mstext = strsep(&mstext, splitdelim);
++
++	/* compute width of the middle status text */
++	w = 0;
++	i = -1;
++	while (mstext[++i]) {
++		if (mstext[i] == '^') {
++			if (!isCode) {
++				isCode = 1;
++				mstext[i] = '\0';
++				w += TEXTW(mstext) - lrpad;
++				mstext[i] = '^';
++				if (mstext[++i] == 'f')
++					w += atoi(mstext + ++i);
++			} else {
++				isCode = 0;
++				mstext = mstext + i + 1;
++				i = -1;
++			}
++		}
++	}
++	if (!isCode)
++		w += TEXTW(mstext) - lrpad;
++	else
++		isCode = 0;
++	mstext = msp;
++
++	w += 2; /* 1px padding on both sides */
++	ret = (m->ww / 2) - w;
++	x = (m->ww / 2) - (w / 2);
++
++	drw_setscheme(drw, scheme[LENGTH(colors)]);
++	drw->scheme[ColFg] = scheme[SchemeNorm][ColFg];
++	drw->scheme[ColBg] = scheme[SchemeNorm][ColBg];
++	drw_rect(drw, x, 0, m->ww - w, bh, 1, 1);
++	x++;
++
++	/* process middle status text */
++	i = -1;
++	while (mstext[++i]) {
++		if (mstext[i] == '^' && !isCode) {
++			isCode = 1;
++
++			mstext[i] = '\0';
++			w = TEXTW(mstext) - lrpad;
++			drw_text(drw, x, 0, w, bh, 0, mstext, 0);
++
++			x += w;
++
++			/* process code */
++			while (mstext[++i] != '^') {
++				if (mstext[i] == 'c') {
++					char buf[8];
++					memcpy(buf, (char*)mstext+i+1, 7);
++					buf[7] = '\0';
++					drw_clr_create(drw, &drw->scheme[ColFg], buf);
++					i += 7;
++				} else if (mstext[i] == 'b') {
++					char buf[8];
++					memcpy(buf, (char*)mstext+i+1, 7);
++					buf[7] = '\0';
++					drw_clr_create(drw, &drw->scheme[ColBg], buf);
++					i += 7;
++				} else if (mstext[i] == 'd') {
++					drw->scheme[ColFg] = scheme[SchemeNorm][ColFg];
++					drw->scheme[ColBg] = scheme[SchemeNorm][ColBg];
++				} else if (mstext[i] == 'r') {
++					int rx = atoi(mstext + ++i);
++					while (mstext[++i] != ',');
++					int ry = atoi(mstext + ++i);
++					while (mstext[++i] != ',');
++					int rw = atoi(mstext + ++i);
++					while (mstext[++i] != ',');
++					int rh = atoi(mstext + ++i);
++
++					drw_rect(drw, rx + x, ry, rw, rh, 1, 0);
++				} else if (mstext[i] == 'f') {
++					x += atoi(mstext + ++i);
++				}
++			}
++
++			mstext = mstext + i + 1;
++			i=-1;
++			isCode = 0;
++		}
++	}
++
++	if (!isCode) {
++		w = TEXTW(mstext) - lrpad;
++		drw_text(drw, x, 0, w, bh, 0, mstext, 0);
++	}
++
+ 	/* compute width of the status text */
++	x = 0;
++	isCode = 0;
+ 	w = 0;
+ 	i = -1;
+ 	while (text[++i]) {
+@@ -826,7 +935,6 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
+ 	text = p;
+ 
+ 	w += 2; /* 1px padding on both sides */
+-	ret = m->ww - w;
+ 	x = m->ww - w - getsystraywidth();
+ 
+ 	drw_setscheme(drw, scheme[LENGTH(colors)]);
+@@ -891,6 +999,7 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
+ 	}
+ 
+ 	drw_setscheme(drw, scheme[SchemeNorm]);
++	free(msp);
+ 	free(p);
+ 
+ 	return ret;
