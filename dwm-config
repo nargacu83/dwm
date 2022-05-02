@@ -38,6 +38,8 @@ patches_children=(
     # Features patches
     # Custom patch for controlling the icon size of the system tray and centers it vertically
     "systray-iconsize.diff > status2d-systray.diff"
+    # Patch to add a class hint to the systray
+    "systray-classhint.diff > status2d-systray.diff"
     # Custom patch based on some splitstatus patch changes to make it work with status2d-systray
     "splitstatusbar.diff > status2d-systray.diff"
 
