@@ -17,6 +17,7 @@ NORMAL=$(tput sgr0)
 
 patches=(
     "config.diff"
+    "picom.diff"
     "nomonocleborder.diff"
     "fullgaps.diff"
     "alwayscenter.diff"
