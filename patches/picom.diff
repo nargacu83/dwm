@@ -1,9 +1,5 @@
-Base version:
-* https://github.com/szatanjl/dwm/commit/1529909466206016f2101457bbf37c67195714c8
-
-Notes:
-* Fix transparant borders when picom is active.
-
+diff --git a/drw.c b/drw.c
+index 4cdbcbe5..cd899f89 100644
 --- a/drw.c
 +++ b/drw.c
 @@ -203,6 +203,8 @@ drw_clr_create(Drw *drw, Clr *dest, const char *clrname)
@@ -13,5 +9,5 @@ Notes:
 +
 +	dest->pixel |= 0xff << 24;
  }
-
+ 
  /* Wrapper to create color schemes. The caller has to call free(3) on the

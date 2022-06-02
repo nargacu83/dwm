@@ -224,14 +224,14 @@ index a2ac963a..f480925b 100644
  	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 diff --git a/config.h b/config.h
 new file mode 100644
-index 00000000..30dd38e6
+index 00000000..c65f27b6
 --- /dev/null
 +++ b/config.h
 @@ -0,0 +1,179 @@
 +/* See LICENSE file for copyright and license details. */
 +
 +/* appearance */
-+static const unsigned int borderpx  = 1;        /* border pixel of windows */
++static const unsigned int borderpx  = 2;        /* border pixel of windows */
 +static const unsigned int gappx     = 4;        /* gaps between windows */
 +static const unsigned int snap      = 16;       /* snap pixel */
 +static const int focusonwheel       = 0;
