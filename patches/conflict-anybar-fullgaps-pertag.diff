@@ -1,0 +1,21 @@
+diff --git a/dwm.c b/dwm.c
+index c7dbe388..1ee5e9ed 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -650,6 +650,7 @@ createmon(void)
+ 	m->nmaster = nmaster;
+ 	m->showbar = showbar;
+ 	m->topbar = topbar;
++	m->gappx = gappx;
+ 	m->bh = bh;
+ 	m->lt[0] = &layouts[0];
+ 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
+@@ -1807,7 +1808,7 @@ togglebar(const Arg *arg)
+ 	if (usealtbar && !selmon->traywin)
+ 		scantray();
+ 
+-	selmon->showbar = !selmon->showbar;
++	selmon->showbar = selmon->pertag->showbars[selmon->pertag->curtag] = !selmon->showbar;
+ 	updatebarpos(selmon);
+ 	XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, selmon->bh);
+ 	if (usealtbar)

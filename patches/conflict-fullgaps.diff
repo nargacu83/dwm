@@ -1,0 +1,12 @@
+diff --git a/dwm.c b/dwm.c
+index 9c8be552..96e36910 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -642,6 +642,7 @@ createmon(void)
+ 	m->showbar = showbar;
+ 	m->topbar = topbar;
+ 	m->gappx = gappx;
++	m->bh = bh;
+ 	m->lt[0] = &layouts[0];
+ 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
+ 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);

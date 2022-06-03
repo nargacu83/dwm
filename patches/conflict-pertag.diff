@@ -1,0 +1,19 @@
+diff --git a/dwm.c b/dwm.c
+index 5114f5ec..4f1d446b 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -1731,6 +1731,14 @@ tile(Monitor *m)
+ void
+ togglebar(const Arg *arg)
+ {
++	/**
++	 * Polybar tray does not raise maprequest event. It must be manually scanned
++	 * for. Scanning it too early while the tray is being populated would give
++	 * wrong dimensions.
++	 */
++	if (usealtbar && !selmon->traywin)
++		scantray();
++
+ 	selmon->showbar = selmon->pertag->showbars[selmon->pertag->curtag] = !selmon->showbar;
+ 	updatebarpos(selmon);
+ 	XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, bh);
