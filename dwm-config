@@ -158,6 +158,7 @@ function config_diff_children(){
 
 function config_diff(){
     print_message "Diff..." ${BLUE}
+    delete_build_files
 
     if ! git diff --quiet; then
         print_message "Uncommited changes detected, aborting diff." ${RED}
@@ -167,7 +168,6 @@ function config_diff(){
     config_diff_children
 
     git checkout master && make clean && git reset --hard origin/master
-    delete_build_files
 
     for patch in ${patches[@]}; do
         git diff master..${patch} > "${PATCHES_DIRECTORY}/${patch}"
