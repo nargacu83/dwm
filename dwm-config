@@ -27,8 +27,8 @@ patches=(
     "focusonclick.diff"
     "steam.diff"
     "anybar-polybar-fix.diff"
+    "colorbar.diff"
     # "bar-height.diff"
-    # "colorbar.diff"
     # "status2d-systray.diff"
     # "tagsizecenter.diff"
 )
