@@ -26,37 +26,39 @@ patches=(
     "pertag.diff"
     "focusonclick.diff"
     "steam.diff"
-    "anybar-polybar-fix.diff"
     "colorbar.diff"
-    # "bar-height.diff"
-    # "status2d-systray.diff"
-    # "tagsizecenter.diff"
+    "bar-height.diff"
+    "status2d-systray.diff"
+    "tagsizecenter.diff"
+    # "anybar-polybar-fix.diff"
+    # "ewmhtags.diff"
 )
 
 # Indicate a patch done on top of another patch
 # Can be useful to resolve conflict between patches
 # eg. patch.diff > base.diff
 patches_children=(
-    "conflict-anybar-fullgaps-pertag.diff > anybar-polybar-fix.diff"
-    "conflict-fullgaps.diff > fullgaps.diff"
-    "conflict-pertag.diff > pertag.diff"
+    # Anybar
+    # "conflict-anybar-fullgaps-pertag.diff > anybar-polybar-fix.diff"
+    # "conflict-fullgaps.diff > fullgaps.diff"
+    # "conflict-pertag.diff > pertag.diff"
 
     # Features patches
     # Custom patch for controlling the icon size of the system tray and centers it vertically
-    # "systray-iconsize.diff > status2d-systray.diff"
+    "systray-iconsize.diff > status2d-systray.diff"
     # Patch to add a class hint to the systray
-    # "systray-classhint.diff > status2d-systray.diff"
+    "systray-classhint.diff > status2d-systray.diff"
     # Custom patch based on some splitstatus patch changes to make it work with status2d-systray
-    # "splitstatusbar.diff > status2d-systray.diff"
+    "splitstatusbar.diff > status2d-systray.diff"
 
     # Conflicts patches
     # Fixed conflict between status2d-systray and focusonclick
-    # "conflict-focusonclick.diff > focusonclick.diff"
-    # "conflict-status2d-systray.diff > status2d-systray.diff"
+    "conflict-focusonclick.diff > focusonclick.diff"
+    "conflict-status2d-systray.diff > status2d-systray.diff"
 
     # Fixed conflict between tagsizecenter and colorbar
-    # "conflict-tagsizecenter.diff > tagsizecenter.diff"
-    # "conflict-colorbar.diff > colorbar.diff"
+    "conflict-tagsizecenter.diff > tagsizecenter.diff"
+    "conflict-colorbar.diff > colorbar.diff"
 )
 
 function print_message() {
