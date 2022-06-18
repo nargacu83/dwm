@@ -1,5 +1,5 @@
 diff --git a/dwm.c b/dwm.c
-index 8153bfea..65cc8a21 100644
+index 8153bfea..47219c13 100644
 --- a/dwm.c
 +++ b/dwm.c
 @@ -794,13 +794,122 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
@@ -57,7 +57,7 @@ index 8153bfea..65cc8a21 100644
 +	mstext = msp;
 +
 +	w += 2; /* 1px padding on both sides */
-+	ret = (m->ww / 2) - w;
++	ret = (m->ww / 2) - (w / 2);
 +	x = (m->ww / 2) - (w / 2);
 +
 +	drw_setscheme(drw, scheme[LENGTH(colors)]);
