@@ -269,7 +269,7 @@ function config_install(){
     config_load
     config_merge
 
-    make && sudo make clean install || exit 1
+    make && doas make clean install || exit 1
 
     config_clean
 
@@ -283,7 +283,7 @@ function config_install_theirs(){
     config_load
     config_merge_theirs
 
-    make && sudo make clean install || exit 1
+    make && doas make clean install || exit 1
 
     config_clean
 
