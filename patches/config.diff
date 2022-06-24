@@ -1,5 +1,5 @@
 diff --git a/config.def.h b/config.def.h
-index a2ac963a..8c758ae0 100644
+index a2ac963a..0577da89 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -1,38 +1,99 @@
@@ -136,7 +136,7 @@ index a2ac963a..8c758ae0 100644
  #define TAGKEYS(KEY,TAG) \
  	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
  	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-@@ -55,46 +117,53 @@ static const Layout layouts[] = {
+@@ -55,36 +117,42 @@ static const Layout layouts[] = {
  /* helper for spawning shell commands in the pre dwm-5.0 fashion */
  #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
  
@@ -194,17 +194,16 @@ index a2ac963a..8c758ae0 100644
 +	{ MODKEY,                       XK_semicolon, focusmon,    {.i = +1 } },
  	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 -	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
--	TAGKEYS(                        XK_1,                      0)
--	TAGKEYS(                        XK_2,                      1)
--	TAGKEYS(                        XK_3,                      2)
--	TAGKEYS(                        XK_4,                      3)
--	TAGKEYS(                        XK_5,                      4)
--	TAGKEYS(                        XK_6,                      5)
--	TAGKEYS(                        XK_7,                      6)
--	TAGKEYS(                        XK_8,                      7)
--	TAGKEYS(                        XK_9,                      8)
--	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 +	{ MODKEY|ShiftMask,             XK_semicolon, tagmon,      {.i = +1 } },
++
+ 	TAGKEYS(                        XK_1,                      0)
+ 	TAGKEYS(                        XK_2,                      1)
+ 	TAGKEYS(                        XK_3,                      2)
+@@ -94,7 +162,18 @@ static Key keys[] = {
+ 	TAGKEYS(                        XK_7,                      6)
+ 	TAGKEYS(                        XK_8,                      7)
+ 	TAGKEYS(                        XK_9,                      8)
+-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 +
 +	TAGKEYS(                        XK_ampersand,              0)
 +	TAGKEYS(                        XK_eacute,                 1)
@@ -220,7 +219,7 @@ index a2ac963a..8c758ae0 100644
  };
  
  /* button definitions */
-@@ -104,7 +173,7 @@ static Button buttons[] = {
+@@ -104,7 +183,7 @@ static Button buttons[] = {
  	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
  	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
  	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
