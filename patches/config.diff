@@ -1,5 +1,5 @@
 diff --git a/config.def.h b/config.def.h
-index a2ac963a..0577da89 100644
+index a2ac963a..292d9ebf 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -1,38 +1,99 @@
@@ -58,7 +58,7 @@ index a2ac963a..0577da89 100644
 +static const char col_bg[]       = "#282a36";
 +static const char col_bg_focus[] = "#ff5555";
 +static const char col_bd[]       = "#282a36";
-+static const char col_bd_focus[] = "#bd93f9";
++static const char col_bd_focus[] = "#44475a";
 +static const char col_bar_bg[]   = "#000000";
 +
 +static const char *colors[][3]   = {
