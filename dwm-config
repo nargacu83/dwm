@@ -30,6 +30,7 @@ patches=(
     "bar-height.diff"
     "status2d-systray.diff"
     "tagsizecenter.diff"
+    "refreshrate-window-motion.diff"
     # "anybar-polybar-fix.diff"
     # "ewmhtags.diff"
 )

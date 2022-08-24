@@ -1,0 +1,22 @@
+diff --git a/dwm.c b/dwm.c
+index a96f33c1..b9791556 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -1166,7 +1166,7 @@ movemouse(const Arg *arg)
+ 			handler[ev.type](&ev);
+ 			break;
+ 		case MotionNotify:
+-			if ((ev.xmotion.time - lasttime) <= (1000 / 60))
++			if ((ev.xmotion.time - lasttime) <= (1000 / 100))
+ 				continue;
+ 			lasttime = ev.xmotion.time;
+ 
+@@ -1320,7 +1320,7 @@ resizemouse(const Arg *arg)
+ 			handler[ev.type](&ev);
+ 			break;
+ 		case MotionNotify:
+-			if ((ev.xmotion.time - lasttime) <= (1000 / 60))
++			if ((ev.xmotion.time - lasttime) <= (1000 / 100))
+ 				continue;
+ 			lasttime = ev.xmotion.time;
+ 
